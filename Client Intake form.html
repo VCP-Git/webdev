@@ -1,0 +1,1364 @@
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* === SQUARESPACE RESET — force our sizing === */
+  .vcp-form-wrapper,
+  .vcp-form-wrapper *,
+  .vcp-form-wrapper *::before,
+  .vcp-form-wrapper *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box !important;
+  }
+
+  .vcp-form-wrapper {
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 18px !important;
+    color: #343963 !important;
+    position: relative;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin-left: calc(-50vw + 50%) !important;
+    margin-right: calc(-50vw + 50%) !important;
+    line-height: 1.5 !important;
+    -webkit-text-size-adjust: 100% !important;
+    overflow-x: hidden;
+  }
+
+  /* === HEADER === */
+  .vcp-form-wrapper .form-header {
+    background: #343963 !important;
+    padding: 40px 28px 90px !important;
+    text-align: center !important;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vcp-form-wrapper .form-header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0; right: 0;
+    height: 60px;
+    background: #FFFFFF;
+    border-radius: 40px 40px 0 0;
+  }
+
+  .vcp-form-wrapper .form-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 80%, rgba(100,108,145,0.3) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(69,85,96,0.2) 0%, transparent 50%);
+  }
+
+  .vcp-form-wrapper .header-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .vcp-form-wrapper .header-badge {
+    display: inline-block !important;
+    background: rgba(255,255,255,0.12) !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    border-radius: 100px !important;
+    padding: 8px 22px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    letter-spacing: 1.5px !important;
+    text-transform: uppercase !important;
+    color: rgba(255,255,255,0.85) !important;
+    margin-bottom: 18px !important;
+    backdrop-filter: blur(4px);
+  }
+
+  .vcp-form-wrapper .form-header h1 {
+    font-family: 'DM Serif Display', serif !important;
+    font-size: 46px !important;
+    color: #FFFFFF !important;
+    font-weight: 400 !important;
+    line-height: 1.2 !important;
+    margin-bottom: 14px !important;
+    letter-spacing: -0.5px !important;
+  }
+
+  .vcp-form-wrapper .form-header p {
+    color: rgba(255,255,255,0.7) !important;
+    font-size: 17px !important;
+    max-width: 500px !important;
+    margin: 0 auto !important;
+    line-height: 1.6 !important;
+  }
+
+  /* === PROGRESS === */
+  .vcp-form-wrapper .progress-container {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.92) !important;
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(52, 57, 99, 0.08);
+    padding: 20px 28px !important;
+    transition: box-shadow 0.3s;
+  }
+
+  .vcp-form-wrapper .progress-container.scrolled {
+    box-shadow: 0 4px 24px rgba(52,57,99,0.08);
+  }
+
+  .vcp-form-wrapper .progress-inner {
+    max-width: 700px !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  .vcp-form-wrapper .progress-step {
+    flex: 1;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 8px !important;
+    cursor: pointer;
+    opacity: 0.35;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .vcp-form-wrapper .progress-step.active { opacity: 1; }
+  .vcp-form-wrapper .progress-step.completed { opacity: 0.7; }
+
+  .vcp-form-wrapper .progress-bar {
+    width: 100%;
+    height: 5px !important;
+    background: rgba(52, 57, 99, 0.08);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .vcp-form-wrapper .progress-fill {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 0%;
+    background: linear-gradient(90deg, #343963, #646C91);
+    border-radius: 4px;
+    transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .vcp-form-wrapper .progress-step.active .progress-fill,
+  .vcp-form-wrapper .progress-step.completed .progress-fill { width: 100%; }
+
+  .vcp-form-wrapper .progress-label {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    color: #343963 !important;
+    white-space: nowrap;
+  }
+
+  /* === FORM BODY === */
+  .vcp-form-wrapper .form-body {
+    max-width: 700px !important;
+    margin: 0 auto !important;
+    padding: 0 28px 130px !important;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* === STEPS === */
+  .vcp-form-wrapper .step {
+    display: none;
+    animation: vcpStepIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .vcp-form-wrapper .step.active { display: block !important; }
+
+  @keyframes vcpStepIn {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .vcp-form-wrapper .step-intro {
+    text-align: center !important;
+    padding: 46px 0 42px !important;
+  }
+
+  .vcp-form-wrapper .step-number {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 46px !important;
+    height: 46px !important;
+    border-radius: 14px !important;
+    background: #343963 !important;
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+    font-size: 18px !important;
+    margin-bottom: 18px !important;
+  }
+
+  .vcp-form-wrapper .step-intro h2 {
+    font-family: 'DM Serif Display', serif !important;
+    font-size: 32px !important;
+    font-weight: 400 !important;
+    margin-bottom: 10px !important;
+    color: #343963 !important;
+    line-height: 1.2 !important;
+  }
+
+  .vcp-form-wrapper .step-intro p {
+    color: #646C91 !important;
+    font-size: 17px !important;
+    line-height: 1.5 !important;
+  }
+
+  /* === FIELDS === */
+  .vcp-form-wrapper .field-group {
+    margin-bottom: 32px !important;
+    opacity: 0;
+    transform: translateY(12px);
+    animation: vcpFieldIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .vcp-form-wrapper .field-group:nth-child(2) { animation-delay: 0.05s; }
+  .vcp-form-wrapper .field-group:nth-child(3) { animation-delay: 0.1s; }
+  .vcp-form-wrapper .field-group:nth-child(4) { animation-delay: 0.15s; }
+  .vcp-form-wrapper .field-group:nth-child(5) { animation-delay: 0.2s; }
+  .vcp-form-wrapper .field-group:nth-child(6) { animation-delay: 0.25s; }
+  .vcp-form-wrapper .field-group:nth-child(7) { animation-delay: 0.3s; }
+
+  @keyframes vcpFieldIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .vcp-form-wrapper .field-row {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 18px !important;
+  }
+
+  @media (max-width: 500px) {
+    .vcp-form-wrapper .field-row { grid-template-columns: 1fr !important; }
+  }
+
+  .vcp-form-wrapper label {
+    display: block !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #343963 !important;
+    margin-bottom: 10px !important;
+    letter-spacing: 0.3px !important;
+    line-height: 1.4 !important;
+  }
+
+  .vcp-form-wrapper label .req {
+    color: #646C91 !important;
+    font-weight: 400 !important;
+    margin-left: 2px;
+  }
+
+  .vcp-form-wrapper input[type="text"],
+  .vcp-form-wrapper input[type="email"],
+  .vcp-form-wrapper input[type="tel"],
+  .vcp-form-wrapper input[type="date"],
+  .vcp-form-wrapper input[type="number"],
+  .vcp-form-wrapper select,
+  .vcp-form-wrapper textarea {
+    width: 100% !important;
+    padding: 16px 18px !important;
+    border: 2px solid rgba(52, 57, 99, 0.15) !important;
+    border-radius: 12px !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 17px !important;
+    color: #343963 !important;
+    background: #FFFFFF !important;
+    transition: all 0.25s ease;
+    outline: none !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    height: auto !important;
+    line-height: 1.5 !important;
+    min-height: 0 !important;
+  }
+
+  .vcp-form-wrapper input:focus,
+  .vcp-form-wrapper select:focus,
+  .vcp-form-wrapper textarea:focus {
+    border-color: #343963 !important;
+    box-shadow: 0 0 0 4px rgba(52,57,99,0.08) !important;
+  }
+
+  .vcp-form-wrapper input::placeholder,
+  .vcp-form-wrapper textarea::placeholder {
+    color: rgba(100,108,145,0.5) !important;
+    font-size: 16px !important;
+  }
+
+  .vcp-form-wrapper textarea {
+    resize: vertical;
+    min-height: 110px !important;
+    line-height: 1.6 !important;
+  }
+
+  .vcp-form-wrapper select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23343963' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 16px center !important;
+    padding-right: 44px !important;
+  }
+
+  /* === CHOICE CARDS === */
+  .vcp-form-wrapper .choice-grid {
+    display: grid !important;
+    gap: 12px !important;
+  }
+
+  .vcp-form-wrapper .choice-grid.cols-2 {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .vcp-form-wrapper .choice-grid.cols-3 {
+    grid-template-columns: 1fr 1fr 1fr !important;
+  }
+
+  @media (max-width: 500px) {
+    .vcp-form-wrapper .choice-grid.cols-2,
+    .vcp-form-wrapper .choice-grid.cols-3 { grid-template-columns: 1fr !important; }
+  }
+
+  .vcp-form-wrapper .choice-card {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .vcp-form-wrapper .choice-card input {
+    position: absolute !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  .vcp-form-wrapper .choice-label {
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
+    padding: 16px 18px !important;
+    border: 2px solid rgba(52, 57, 99, 0.15) !important;
+    border-radius: 12px !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    color: #343963 !important;
+    transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    user-select: none;
+    line-height: 1.4 !important;
+    background: transparent !important;
+  }
+
+  .vcp-form-wrapper .choice-label:hover {
+    border-color: #646C91 !important;
+    background: rgba(100, 108, 145, 0.12) !important;
+  }
+
+  .vcp-form-wrapper .choice-card input:checked + .choice-label {
+    border-color: #343963 !important;
+    background: #343963 !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 16px rgba(52,57,99,0.2);
+  }
+
+  .vcp-form-wrapper .choice-icon {
+    width: 24px !important;
+    height: 24px !important;
+    min-width: 24px !important;
+    border-radius: 50% !important;
+    border: 2px solid rgba(52, 57, 99, 0.15) !important;
+    flex-shrink: 0;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.25s;
+    background: #FFFFFF !important;
+  }
+
+  .vcp-form-wrapper .choice-card input[type="checkbox"] + .choice-label .choice-icon {
+    border-radius: 6px !important;
+  }
+
+  .vcp-form-wrapper .choice-card input:checked + .choice-label .choice-icon {
+    border-color: #FFFFFF !important;
+    background: #FFFFFF !important;
+  }
+
+  .vcp-form-wrapper .choice-card input:checked + .choice-label .choice-icon::after {
+    content: '';
+    width: 12px !important;
+    height: 12px !important;
+    background: #343963;
+    border-radius: 50%;
+    display: block;
+  }
+
+  .vcp-form-wrapper .choice-card input[type="checkbox"]:checked + .choice-label .choice-icon::after {
+    border-radius: 2px;
+    width: 12px !important;
+    height: 12px !important;
+  }
+
+  /* === NAVIGATION === */
+  .vcp-form-wrapper .nav-buttons {
+    display: flex !important;
+    gap: 14px !important;
+    padding-top: 36px !important;
+    border-top: 1px solid rgba(52, 57, 99, 0.08) !important;
+    margin-top: 20px !important;
+  }
+
+  .vcp-form-wrapper .btn {
+    padding: 18px 36px !important;
+    border-radius: 14px !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 17px !important;
+    font-weight: 600 !important;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    border: none !important;
+    letter-spacing: 0.3px !important;
+    text-transform: none !important;
+    line-height: 1.5 !important;
+    text-decoration: none !important;
+  }
+
+  .vcp-form-wrapper .btn-back {
+    background: transparent !important;
+    color: #646C91 !important;
+    padding: 18px 22px !important;
+  }
+
+  .vcp-form-wrapper .btn-back:hover { color: #343963 !important; }
+
+  .vcp-form-wrapper .btn-next {
+    flex: 1;
+    background: #343963 !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 20px rgba(52,57,99,0.25);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vcp-form-wrapper .btn-next:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(52,57,99,0.3);
+  }
+
+  .vcp-form-wrapper .btn-next:active { transform: translateY(0); }
+
+  .vcp-form-wrapper .btn-next .arrow {
+    display: inline-block;
+    margin-left: 8px;
+    transition: transform 0.3s;
+  }
+
+  .vcp-form-wrapper .btn-next:hover .arrow { transform: translateX(4px); }
+
+  .vcp-form-wrapper .btn-submit {
+    flex: 1;
+    background: linear-gradient(135deg, #343963, #455560) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 20px rgba(52,57,99,0.25);
+    font-size: 18px !important;
+    padding: 20px 36px !important;
+  }
+
+  .vcp-form-wrapper .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(52,57,99,0.35);
+  }
+
+  /* === VALIDATION === */
+  .vcp-form-wrapper .field-error {
+    font-size: 13px !important;
+    color: #c0392b !important;
+    margin-top: 8px !important;
+    display: none;
+    animation: vcpShake 0.4s ease;
+  }
+
+  .vcp-form-wrapper .field-group.invalid input,
+  .vcp-form-wrapper .field-group.invalid select,
+  .vcp-form-wrapper .field-group.invalid textarea {
+    border-color: #c0392b !important;
+  }
+
+  .vcp-form-wrapper .field-group.invalid .field-error { display: block !important; }
+
+  @keyframes vcpShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+  }
+
+  /* === COMPLETION === */
+  .vcp-form-wrapper .completion-screen {
+    display: none;
+    text-align: center !important;
+    padding: 90px 28px !important;
+    animation: vcpCompletionIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .vcp-form-wrapper .completion-screen.active { display: block !important; }
+
+  @keyframes vcpCompletionIn {
+    from { opacity: 0; transform: scale(0.95) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .vcp-form-wrapper .completion-icon {
+    width: 90px !important;
+    height: 90px !important;
+    border-radius: 50% !important;
+    background: #343963 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 auto 28px !important;
+    animation: vcpPopIn 0.5s 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes vcpPopIn {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+  }
+
+  .vcp-form-wrapper .completion-icon svg {
+    width: 40px !important;
+    height: 40px !important;
+    stroke: #FFFFFF !important;
+    stroke-width: 3;
+    fill: none !important;
+  }
+
+  .vcp-form-wrapper .completion-screen h2 {
+    font-family: 'DM Serif Display', serif !important;
+    font-size: 36px !important;
+    font-weight: 400 !important;
+    margin-bottom: 14px !important;
+    color: #343963 !important;
+  }
+
+  .vcp-form-wrapper .completion-screen p {
+    color: #646C91 !important;
+    font-size: 18px !important;
+    line-height: 1.6 !important;
+    max-width: 460px !important;
+    margin: 0 auto !important;
+  }
+
+  /* === COHORT BADGE === */
+  .vcp-form-wrapper .cohort-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    background: linear-gradient(135deg, #343963, #646C91) !important;
+    color: #FFFFFF !important;
+    padding: 12px 24px !important;
+    border-radius: 100px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+    margin-bottom: 32px !important;
+    box-shadow: 0 4px 16px rgba(52,57,99,0.2);
+  }
+
+  .vcp-form-wrapper .cohort-badge .dot {
+    width: 9px !important;
+    height: 9px !important;
+    border-radius: 50% !important;
+    background: #6fcf97 !important;
+    animation: vcpPulse 2s infinite;
+  }
+
+  @keyframes vcpPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* === FILE UPLOAD === */
+  .vcp-form-wrapper .file-upload-zone {
+    border: 2px dashed rgba(52, 57, 99, 0.15) !important;
+    border-radius: 16px !important;
+    padding: 44px 28px !important;
+    text-align: center !important;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: rgba(52, 57, 99, 0.04) !important;
+  }
+
+  .vcp-form-wrapper .file-upload-zone:hover {
+    border-color: #343963 !important;
+    background: rgba(100, 108, 145, 0.08) !important;
+  }
+
+  .vcp-form-wrapper .file-upload-zone.has-file {
+    border-color: #4a7c59 !important;
+    background: rgba(74, 124, 89, 0.06) !important;
+  }
+
+  .vcp-form-wrapper .file-upload-zone svg {
+    width: 44px !important;
+    height: 44px !important;
+    stroke: #646C91 !important;
+    fill: none !important;
+    stroke-width: 1.5;
+    margin-bottom: 14px !important;
+  }
+
+  .vcp-form-wrapper .file-upload-zone p {
+    font-size: 16px !important;
+    color: #646C91 !important;
+  }
+
+  .vcp-form-wrapper .file-upload-zone .file-name {
+    font-weight: 600 !important;
+    color: #343963 !important;
+    margin-top: 10px !important;
+  }
+
+  .vcp-form-wrapper .file-upload-zone input[type="file"] {
+    display: none !important;
+  }
+
+  /* === HELPER TEXT === */
+  .vcp-form-wrapper .helper-text {
+    font-size: 13px !important;
+    color: #646C91 !important;
+    margin-top: 8px !important;
+    line-height: 1.4 !important;
+  }
+
+  /* === CONDITIONAL / OTHER === */
+  .vcp-form-wrapper .conditional-field {
+    display: none;
+    animation: vcpFieldIn 0.3s ease forwards;
+  }
+
+  .vcp-form-wrapper .conditional-field.visible { display: block !important; }
+
+  .vcp-form-wrapper .other-input-wrapper {
+    margin-top: 12px !important;
+    display: none;
+  }
+
+  .vcp-form-wrapper .other-input-wrapper.visible { display: block !important; }
+</style>
+
+<div class="vcp-form-wrapper">
+
+  <div class="form-header">
+    <div class="header-content">
+      <div class="header-badge">Veterans Coaching Project</div>
+      <h1>Client Intake Form</h1>
+      <p>Help us match you with the perfect coach. This takes about 5–7 minutes.</p>
+    </div>
+  </div>
+
+  <div class="progress-container" id="vcpProgressBar">
+    <div class="progress-inner">
+      <div class="progress-step active" data-step="1" onclick="vcpGoToStep(1)">
+        <div class="progress-bar"><div class="progress-fill"></div></div>
+        <span class="progress-label">Basics</span>
+      </div>
+      <div class="progress-step" data-step="2" onclick="vcpGoToStep(2)">
+        <div class="progress-bar"><div class="progress-fill"></div></div>
+        <span class="progress-label">Location</span>
+      </div>
+      <div class="progress-step" data-step="3" onclick="vcpGoToStep(3)">
+        <div class="progress-bar"><div class="progress-fill"></div></div>
+        <span class="progress-label">Service</span>
+      </div>
+      <div class="progress-step" data-step="4" onclick="vcpGoToStep(4)">
+        <div class="progress-bar"><div class="progress-fill"></div></div>
+        <span class="progress-label">Coaching</span>
+      </div>
+      <div class="progress-step" data-step="5" onclick="vcpGoToStep(5)">
+        <div class="progress-bar"><div class="progress-fill"></div></div>
+        <span class="progress-label">About You</span>
+      </div>
+      <div class="progress-step" data-step="6" onclick="vcpGoToStep(6)">
+        <div class="progress-bar"><div class="progress-fill"></div></div>
+        <span class="progress-label">Finish</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-body">
+
+    <!-- STEP 1: BASICS -->
+    <div class="step active" id="vcp-step-1">
+      <div class="step-intro">
+        <div class="step-number">1</div>
+        <h2>Let's Start with the Basics</h2>
+        <p>Tell us who you are so we can set everything up.</p>
+      </div>
+
+      <div class="field-group" style="text-align:center; margin-bottom: 36px;">
+        <div class="cohort-badge" id="vcpCohortBadge">
+          <span class="dot"></span>
+          <span id="vcpCohortLabel">Loading cohort...</span>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-row">
+          <div>
+            <label>First Name <span class="req">*</span></label>
+            <input type="text" id="vcpFirstName" placeholder="First name" required>
+            <div class="field-error">Please enter your first name</div>
+          </div>
+          <div>
+            <label>Last Name <span class="req">*</span></label>
+            <input type="text" id="vcpLastName" placeholder="Last name" required>
+            <div class="field-error">Please enter your last name</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-row">
+          <div>
+            <label>Middle Name</label>
+            <input type="text" id="vcpMiddleName" placeholder="Middle name">
+          </div>
+          <div>
+            <label>Preferred Name</label>
+            <input type="text" id="vcpPreferredName" placeholder="What should we call you?">
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>Email Address <span class="req">*</span></label>
+        <input type="email" id="vcpEmail" placeholder="you@example.com" required>
+        <div class="field-error">Please enter a valid email address</div>
+      </div>
+
+      <div class="field-group">
+        <label>Phone Number <span class="req">*</span></label>
+        <input type="tel" id="vcpPhone" placeholder="(555) 123-4567" required>
+        <div class="field-error">Please enter your phone number</div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-next" onclick="vcpNextStep(1)">Continue <span class="arrow">→</span></button>
+      </div>
+    </div>
+
+    <!-- STEP 2: LOCATION -->
+    <div class="step" id="vcp-step-2">
+      <div class="step-intro">
+        <div class="step-number">2</div>
+        <h2>Where Are You Located?</h2>
+        <p>This helps us coordinate scheduling across time zones.</p>
+      </div>
+
+      <div class="field-group">
+        <label>Country <span class="req">*</span></label>
+        <select id="vcpCountry" required onchange="vcpHandleCountryChange()">
+          <option value="">Select your country</option>
+          <option value="US">United States of America</option>
+          <option value="CA">Canada</option>
+          <option value="other">Other</option>
+        </select>
+        <div class="field-error">Please select your country</div>
+      </div>
+
+      <div class="conditional-field" id="vcp-us-fields">
+        <div class="field-group">
+          <label>State <span class="req">*</span></label>
+          <select id="vcpState">
+            <option value="">Select your state</option>
+            <option>Alabama</option><option>Alaska</option><option>Arizona</option><option>Arkansas</option><option>California</option><option>Colorado</option><option>Connecticut</option><option>Delaware</option><option>Florida</option><option>Georgia</option><option>Hawaii</option><option>Idaho</option><option>Illinois</option><option>Indiana</option><option>Iowa</option><option>Kansas</option><option>Kentucky</option><option>Louisiana</option><option>Maine</option><option>Maryland</option><option>Massachusetts</option><option>Michigan</option><option>Minnesota</option><option>Mississippi</option><option>Missouri</option><option>Montana</option><option>Nebraska</option><option>Nevada</option><option>New Hampshire</option><option>New Jersey</option><option>New Mexico</option><option>New York</option><option>North Carolina</option><option>North Dakota</option><option>Ohio</option><option>Oklahoma</option><option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option><option>South Carolina</option><option>South Dakota</option><option>Tennessee</option><option>Texas</option><option>Utah</option><option>Vermont</option><option>Virginia</option><option>Washington</option><option>West Virginia</option><option>Wisconsin</option><option>Wyoming</option>
+          </select>
+          <div class="field-error">Please select your state</div>
+        </div>
+        <div class="field-group">
+          <div class="field-row">
+            <div>
+              <label>City <span class="req">*</span></label>
+              <input type="text" id="vcpCity" placeholder="Your city">
+              <div class="field-error">Please enter your city</div>
+            </div>
+            <div>
+              <label>Zip Code <span class="req">*</span></label>
+              <input type="text" id="vcpZip" placeholder="12345">
+              <div class="field-error">Please enter your zip code</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="conditional-field" id="vcp-ca-fields">
+        <div class="field-group">
+          <label>Province <span class="req">*</span></label>
+          <select id="vcpProvince">
+            <option value="">Select your province</option>
+            <option>Alberta</option><option>British Columbia</option><option>Manitoba</option><option>New Brunswick</option><option>Newfoundland and Labrador</option><option>Nova Scotia</option><option>Ontario</option><option>Prince Edward Island</option><option>Quebec</option><option>Saskatchewan</option>
+          </select>
+          <div class="field-error">Please select your province</div>
+        </div>
+        <div class="field-group">
+          <label>Postal Code <span class="req">*</span></label>
+          <input type="text" id="vcpPostalCode" placeholder="A1A 1A1">
+          <div class="field-error">Please enter your postal code</div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-back" onclick="vcpPrevStep(2)">← Back</button>
+        <button class="btn btn-next" onclick="vcpNextStep(2)">Continue <span class="arrow">→</span></button>
+      </div>
+    </div>
+
+    <!-- STEP 3: MILITARY SERVICE -->
+    <div class="step" id="vcp-step-3">
+      <div class="step-intro">
+        <div class="step-number">3</div>
+        <h2>Your Military Service</h2>
+        <p>Tell us about your connection to the military.</p>
+      </div>
+
+      <div class="field-group">
+        <label>Current Military Status <span class="req">*</span></label>
+        <div class="choice-grid cols-2">
+          <label class="choice-card"><input type="radio" name="vcpMilStatus" value="Active Duty"><div class="choice-label"><div class="choice-icon"></div>Active Duty</div></label>
+          <label class="choice-card"><input type="radio" name="vcpMilStatus" value="Reserve"><div class="choice-label"><div class="choice-icon"></div>Reserve</div></label>
+          <label class="choice-card"><input type="radio" name="vcpMilStatus" value="National Guard"><div class="choice-label"><div class="choice-icon"></div>National Guard</div></label>
+          <label class="choice-card"><input type="radio" name="vcpMilStatus" value="Retired"><div class="choice-label"><div class="choice-icon"></div>Retired</div></label>
+          <label class="choice-card"><input type="radio" name="vcpMilStatus" value="Discharged"><div class="choice-label"><div class="choice-icon"></div>Discharged</div></label>
+          <label class="choice-card"><input type="radio" name="vcpMilStatus" value="Spouse/family/caregiver"><div class="choice-label"><div class="choice-icon"></div>Spouse / Family / Caregiver</div></label>
+        </div>
+        <div class="field-error">Please select your military status</div>
+      </div>
+
+      <div class="field-group">
+        <label>Branch of Service <span class="req">*</span></label>
+        <div class="helper-text" style="margin-bottom:12px;">If you are a spouse/family member/caregiver, select your loved one's branch.</div>
+        <div class="choice-grid">
+          <label class="choice-card"><input type="radio" name="vcpBranch" value="U.S. Army"><div class="choice-label"><div class="choice-icon"></div>U.S. Army</div></label>
+          <label class="choice-card"><input type="radio" name="vcpBranch" value="U.S. Navy"><div class="choice-label"><div class="choice-icon"></div>U.S. Navy</div></label>
+          <label class="choice-card"><input type="radio" name="vcpBranch" value="U.S. Marine Corps"><div class="choice-label"><div class="choice-icon"></div>U.S. Marine Corps</div></label>
+          <label class="choice-card"><input type="radio" name="vcpBranch" value="U.S. Air Force"><div class="choice-label"><div class="choice-icon"></div>U.S. Air Force</div></label>
+          <label class="choice-card"><input type="radio" name="vcpBranch" value="U.S. Space Force"><div class="choice-label"><div class="choice-icon"></div>U.S. Space Force</div></label>
+          <label class="choice-card"><input type="radio" name="vcpBranch" value="U.S. Coast Guard"><div class="choice-label"><div class="choice-icon"></div>U.S. Coast Guard</div></label>
+          <label class="choice-card"><input type="radio" name="vcpBranch" value="Royal Canadian Navy"><div class="choice-label"><div class="choice-icon"></div>Royal Canadian Navy (RCN)</div></label>
+          <label class="choice-card"><input type="radio" name="vcpBranch" value="Canadian Army"><div class="choice-label"><div class="choice-icon"></div>Canadian Army</div></label>
+          <label class="choice-card"><input type="radio" name="vcpBranch" value="Royal Canadian Air Force"><div class="choice-label"><div class="choice-icon"></div>Royal Canadian Air Force (RCAF)</div></label>
+        </div>
+        <div class="field-error">Please select your branch of service</div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-row">
+          <div>
+            <label>Service Start Date <span class="req">*</span></label>
+            <input type="date" id="vcpServiceStart" required>
+            <div class="helper-text">If family, use your loved one's date.</div>
+            <div class="field-error">Please provide a start date</div>
+          </div>
+          <div>
+            <label>Service End Date <span class="req">*</span></label>
+            <input type="date" id="vcpServiceEnd" required>
+            <div class="helper-text">If family, use your loved one's date.</div>
+            <div class="field-error">Please provide an end date</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>Have you participated in a previous VCP coaching cohort? <span class="req">*</span></label>
+        <div class="choice-grid cols-2">
+          <label class="choice-card"><input type="radio" name="vcpPreviousCohort" value="Yes"><div class="choice-label"><div class="choice-icon"></div>Yes</div></label>
+          <label class="choice-card"><input type="radio" name="vcpPreviousCohort" value="No"><div class="choice-label"><div class="choice-icon"></div>No</div></label>
+        </div>
+        <div class="field-error">Please select an option</div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-back" onclick="vcpPrevStep(3)">← Back</button>
+        <button class="btn btn-next" onclick="vcpNextStep(3)">Continue <span class="arrow">→</span></button>
+      </div>
+    </div>
+
+    <!-- STEP 4: COACHING GOALS -->
+    <div class="step" id="vcp-step-4">
+      <div class="step-intro">
+        <div class="step-number">4</div>
+        <h2>Your Coaching Goals</h2>
+        <p>Help us understand what you'd like to achieve.</p>
+      </div>
+
+      <div class="field-group">
+        <label>What types of coaching are you interested in? <span class="req">*</span></label>
+        <div class="helper-text" style="margin-bottom:12px;">Select all that apply.</div>
+        <div class="choice-grid">
+          <label class="choice-card"><input type="checkbox" name="vcpCoachingType" value="Career Coaching"><div class="choice-label"><div class="choice-icon"></div>Career Coaching</div></label>
+          <label class="choice-card"><input type="checkbox" name="vcpCoachingType" value="Business Coaching"><div class="choice-label"><div class="choice-icon"></div>Business Coaching</div></label>
+          <label class="choice-card"><input type="checkbox" name="vcpCoachingType" value="Life Coaching"><div class="choice-label"><div class="choice-icon"></div>Life Coaching</div></label>
+          <label class="choice-card"><input type="checkbox" name="vcpCoachingType" value="Wellness Coaching"><div class="choice-label"><div class="choice-icon"></div>Wellness Coaching</div></label>
+        </div>
+        <div class="field-error">Please select at least one coaching type</div>
+      </div>
+
+      <div class="field-group">
+        <label>What accomplishments are you looking to achieve? <span class="req">*</span></label>
+        <textarea id="vcpAccomplishments" placeholder="Describe the personal and/or professional goals you'd like to work toward..." rows="4"></textarea>
+        <div class="field-error">Please describe your goals</div>
+      </div>
+
+      <div class="field-group">
+        <label>What gets you excited about life? <span class="req">*</span></label>
+        <textarea id="vcpPassions" placeholder="Hobbies, passions, interests..." rows="3"></textarea>
+        <div class="field-error">Please share what excites you</div>
+      </div>
+
+      <div class="field-group">
+        <label>Can you commit to 12–15 one-hour virtual sessions? <span class="req">*</span></label>
+        <div class="choice-grid cols-2">
+          <label class="choice-card"><input type="radio" name="vcpCommitment" value="Yes"><div class="choice-label"><div class="choice-icon"></div>Yes, I can commit</div></label>
+          <label class="choice-card"><input type="radio" name="vcpCommitment" value="No"><div class="choice-label"><div class="choice-icon"></div>No, not at this time</div></label>
+        </div>
+        <div class="field-error">Please select an option</div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-back" onclick="vcpPrevStep(4)">← Back</button>
+        <button class="btn btn-next" onclick="vcpNextStep(4)">Continue <span class="arrow">→</span></button>
+      </div>
+    </div>
+
+    <!-- STEP 5: ABOUT YOU -->
+    <div class="step" id="vcp-step-5">
+      <div class="step-intro">
+        <div class="step-number">5</div>
+        <h2>Tell Us More About You</h2>
+        <p>A few final details so your coach can get to know you.</p>
+      </div>
+
+      <div class="field-group">
+        <label>How did you learn about VCP? <span class="req">*</span></label>
+        <div class="choice-grid cols-2">
+          <label class="choice-card"><input type="radio" name="vcpHearAbout" value="Email/Phone Outreach" onchange="vcpToggleOther(false)"><div class="choice-label"><div class="choice-icon"></div>Email/Phone Outreach</div></label>
+          <label class="choice-card"><input type="radio" name="vcpHearAbout" value="Social Media" onchange="vcpToggleOther(false)"><div class="choice-label"><div class="choice-icon"></div>Social Media</div></label>
+          <label class="choice-card"><input type="radio" name="vcpHearAbout" value="Educational Institution" onchange="vcpToggleOther(false)"><div class="choice-label"><div class="choice-icon"></div>Educational Institution</div></label>
+          <label class="choice-card"><input type="radio" name="vcpHearAbout" value="Veterans Organization" onchange="vcpToggleOther(false)"><div class="choice-label"><div class="choice-icon"></div>Veterans Organization</div></label>
+          <label class="choice-card"><input type="radio" name="vcpHearAbout" value="Referral" onchange="vcpToggleOther(false)"><div class="choice-label"><div class="choice-icon"></div>Referral</div></label>
+          <label class="choice-card"><input type="radio" name="vcpHearAbout" value="Website" onchange="vcpToggleOther(false)"><div class="choice-label"><div class="choice-icon"></div>Website</div></label>
+          <label class="choice-card"><input type="radio" name="vcpHearAbout" value="Promotional Material" onchange="vcpToggleOther(false)"><div class="choice-label"><div class="choice-icon"></div>Brochure / Flyer</div></label>
+          <label class="choice-card"><input type="radio" name="vcpHearAbout" value="Other" onchange="vcpToggleOther(true)"><div class="choice-label"><div class="choice-icon"></div>Other</div></label>
+        </div>
+        <div class="other-input-wrapper" id="vcpOtherWrapper">
+          <input type="text" id="vcpHearAboutOther" placeholder="Please specify...">
+        </div>
+        <div class="field-error">Please tell us how you found VCP</div>
+      </div>
+
+      <div class="field-group" id="vcpReferralField" style="display:none;">
+        <label>Who referred you to VCP? <span class="req">*</span></label>
+        <input type="text" id="vcpReferredBy" placeholder="Name of person or organization">
+        <div class="field-error">Please tell us who referred you</div>
+      </div>
+
+      <div class="field-group">
+        <label>Any obstacles or challenges you anticipate? <span class="req">*</span></label>
+        <textarea id="vcpObstacles" placeholder="Time constraints, technology access, scheduling conflicts, etc." rows="3"></textarea>
+        <div class="field-error">Please share any anticipated challenges</div>
+      </div>
+
+      <div class="field-group">
+        <label>Your Availability <span class="req">*</span></label>
+        <textarea id="vcpAvailability" placeholder="e.g., Weekday evenings after 6 PM EST, Saturday mornings..." rows="3"></textarea>
+        <div class="field-error">Please describe your availability</div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-back" onclick="vcpPrevStep(5)">← Back</button>
+        <button class="btn btn-next" onclick="vcpNextStep(5)">Continue <span class="arrow">→</span></button>
+      </div>
+    </div>
+
+    <!-- STEP 6: FINISH -->
+    <div class="step" id="vcp-step-6">
+      <div class="step-intro">
+        <div class="step-number">6</div>
+        <h2>Almost There!</h2>
+        <p>Write a short bio and upload a headshot for your coach.</p>
+      </div>
+
+      <div class="field-group">
+        <label>Brief Bio <span class="req">*</span></label>
+        <textarea id="vcpBio" placeholder="Write 5–7 sentences about yourself to share with your coach. Include your background, what drives you, and what you're looking forward to in this program..." rows="6"></textarea>
+        <div class="helper-text">This will be shared with your coach to help them get to know you.</div>
+        <div class="field-error">Please write a brief bio</div>
+      </div>
+
+      <div class="field-group">
+        <label>Headshot <span class="req">*</span></label>
+        <div class="file-upload-zone" id="vcpUploadZone" onclick="document.getElementById('vcpHeadshot').click()">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p>Click to upload your headshot</p>
+          <p style="font-size:13px; margin-top:4px; opacity:0.6;">JPG, PNG — max 5MB</p>
+          <input type="file" id="vcpHeadshot" accept="image/*" onchange="vcpHandleFileUpload(this)">
+        </div>
+        <div class="field-error">Please upload a headshot</div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-back" onclick="vcpPrevStep(6)">← Back</button>
+        <button class="btn btn-submit" onclick="vcpSubmitForm()">Submit Application ✓</button>
+      </div>
+    </div>
+
+    <!-- COMPLETION -->
+    <div class="completion-screen" id="vcpCompletionScreen">
+      <div class="completion-icon">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h2>Application Submitted!</h2>
+      <p>Thank you for your interest in the Veterans Coaching Project. We'll review your information and reach out soon to match you with a coach.</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  (function() {
+    var vcpCurrentStep = 1;
+    var vcpTotalSteps = 6;
+
+    window.addEventListener('scroll', function() {
+      var pb = document.getElementById('vcpProgressBar');
+      if (pb) pb.classList.toggle('scrolled', window.scrollY > 10);
+    });
+
+    window.vcpGoToStep = function(step) {
+      if (step > vcpCurrentStep) return;
+      vcpShowStep(step);
+    };
+
+    function vcpShowStep(step) {
+      var wrapper = document.querySelector('.vcp-form-wrapper');
+      wrapper.querySelectorAll('.step').forEach(function(s) { s.classList.remove('active'); });
+      var target = document.getElementById('vcp-step-' + step);
+      if (target) {
+        void target.offsetWidth;
+        target.classList.add('active');
+      }
+      vcpCurrentStep = step;
+      vcpUpdateProgress();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function vcpUpdateProgress() {
+      document.querySelectorAll('.vcp-form-wrapper .progress-step').forEach(function(ps) {
+        var s = parseInt(ps.getAttribute('data-step'));
+        ps.classList.remove('active', 'completed');
+        if (s === vcpCurrentStep) ps.classList.add('active');
+        else if (s < vcpCurrentStep) ps.classList.add('completed');
+      });
+    }
+
+    window.vcpNextStep = function(from) {
+      if (!vcpValidateStep(from)) return;
+      if (from < vcpTotalSteps) vcpShowStep(from + 1);
+    };
+
+    window.vcpPrevStep = function(from) {
+      if (from > 1) vcpShowStep(from - 1);
+    };
+
+    function vcpValidateStep(step) {
+      var valid = true;
+      var stepEl = document.getElementById('vcp-step-' + step);
+      stepEl.querySelectorAll('.field-group').forEach(function(fg) { fg.classList.remove('invalid'); });
+
+      if (step === 1) {
+        valid = vcpCheckRequired('vcpFirstName') & vcpCheckRequired('vcpLastName') & vcpCheckRequired('vcpEmail') & vcpCheckRequired('vcpPhone');
+      }
+
+      if (step === 2) {
+        var country = document.getElementById('vcpCountry').value;
+        if (!country) { vcpMarkInvalid('vcpCountry'); valid = false; }
+        if (country === 'US') {
+          valid = vcpCheckRequired('vcpState') & vcpCheckRequired('vcpCity') & vcpCheckRequired('vcpZip') & valid;
+        }
+        if (country === 'CA') {
+          valid = vcpCheckRequired('vcpProvince') & vcpCheckRequired('vcpPostalCode') & valid;
+        }
+      }
+
+      if (step === 3) {
+        if (!document.querySelector('input[name="vcpMilStatus"]:checked')) {
+          document.querySelector('input[name="vcpMilStatus"]').closest('.field-group').classList.add('invalid');
+          valid = false;
+        }
+        if (!document.querySelector('input[name="vcpBranch"]:checked')) {
+          document.querySelector('input[name="vcpBranch"]').closest('.field-group').classList.add('invalid');
+          valid = false;
+        }
+        valid = vcpCheckRequired('vcpServiceStart') & vcpCheckRequired('vcpServiceEnd') & valid;
+        if (!document.querySelector('input[name="vcpPreviousCohort"]:checked')) {
+          document.querySelector('input[name="vcpPreviousCohort"]').closest('.field-group').classList.add('invalid');
+          valid = false;
+        }
+      }
+
+      if (step === 4) {
+        if (!document.querySelector('input[name="vcpCoachingType"]:checked')) {
+          document.querySelector('input[name="vcpCoachingType"]').closest('.field-group').classList.add('invalid');
+          valid = false;
+        }
+        valid = vcpCheckRequired('vcpAccomplishments') & vcpCheckRequired('vcpPassions') & valid;
+        if (!document.querySelector('input[name="vcpCommitment"]:checked')) {
+          document.querySelector('input[name="vcpCommitment"]').closest('.field-group').classList.add('invalid');
+          valid = false;
+        }
+      }
+
+      if (step === 5) {
+        if (!document.querySelector('input[name="vcpHearAbout"]:checked')) {
+          document.querySelector('input[name="vcpHearAbout"]').closest('.field-group').classList.add('invalid');
+          valid = false;
+        }
+        valid = vcpCheckRequired('vcpObstacles') & vcpCheckRequired('vcpAvailability') & valid;
+      }
+
+      if (step === 6) {
+        valid = vcpCheckRequired('vcpBio') & valid;
+        if (!document.getElementById('vcpHeadshot').files.length) {
+          document.getElementById('vcpHeadshot').closest('.field-group').classList.add('invalid');
+          valid = false;
+        }
+      }
+
+      return valid;
+    }
+
+    function vcpCheckRequired(id) {
+      var el = document.getElementById(id);
+      if (!el) return true;
+      if (!el.value.trim()) { vcpMarkInvalid(id); return false; }
+      return true;
+    }
+
+    function vcpMarkInvalid(id) {
+      var el = document.getElementById(id);
+      if (el) el.closest('.field-group').classList.add('invalid');
+    }
+
+    window.vcpHandleCountryChange = function() {
+      var val = document.getElementById('vcpCountry').value;
+      document.getElementById('vcp-us-fields').classList.toggle('visible', val === 'US');
+      document.getElementById('vcp-ca-fields').classList.toggle('visible', val === 'CA');
+    };
+
+    document.querySelectorAll('input[name="vcpHearAbout"]').forEach(function(r) {
+      r.addEventListener('change', function() {
+        document.getElementById('vcpReferralField').style.display = this.value === 'Referral' ? 'block' : 'none';
+      });
+    });
+
+    window.vcpToggleOther = function(show) {
+      document.getElementById('vcpOtherWrapper').classList.toggle('visible', show);
+    };
+
+    // === SUPABASE CONFIG ===
+    var VCP_SUPABASE_URL = 'https://gerqcnkjhsloskhbmgil.supabase.co';
+    var VCP_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlcnFjbmtqaHNsb3NraGJtZ2lsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI5MDg0MzksImV4cCI6MjA4ODQ4NDQzOX0.DOfieo_KHHqBvoaiwFjysoAX6c49xc3zIv04BCUPCO4';
+
+    // === DYNAMIC COHORT — pulls active cohort from database ===
+    var vcpCurrentCohort = null;
+
+    async function vcpFetchCurrentCohort() {
+      try {
+        var res = await fetch(VCP_SUPABASE_URL + '/rest/v1/cohorts?status=eq.Active&order=year.desc,season.desc&limit=1', {
+          headers: { 'apikey': VCP_SUPABASE_KEY, 'Authorization': 'Bearer ' + VCP_SUPABASE_KEY }
+        });
+        var data = await res.json();
+        if (!data.length) {
+          res = await fetch(VCP_SUPABASE_URL + '/rest/v1/cohorts?status=eq.Planning&order=year.desc,season.desc&limit=1', {
+            headers: { 'apikey': VCP_SUPABASE_KEY, 'Authorization': 'Bearer ' + VCP_SUPABASE_KEY }
+          });
+          data = await res.json();
+        }
+        if (data.length) {
+          vcpCurrentCohort = data[0].cohort_name;
+        } else {
+          vcpCurrentCohort = 'Summer 2026';
+        }
+      } catch (err) {
+        console.error('Failed to fetch cohort:', err);
+        vcpCurrentCohort = 'Summer 2026';
+      }
+      var label = document.getElementById('vcpCohortLabel');
+      if (label) label.textContent = vcpCurrentCohort + ' Cohort — Now Accepting Applications';
+    }
+
+    vcpFetchCurrentCohort();
+
+    // === CLOUDINARY CONFIG (update with your cloud name + upload preset) ===
+    var VCP_CLOUDINARY_CLOUD = 'dzbzox0x8';
+    var VCP_CLOUDINARY_PRESET = 'vcp_headshots';
+
+    window.vcpHandleFileUpload = function(input) {
+      var zone = document.getElementById('vcpUploadZone');
+      if (input.files.length) {
+        zone.classList.add('has-file');
+        zone.querySelector('p').textContent = 'File selected:';
+        var nameEl = zone.querySelector('.file-name');
+        if (!nameEl) { nameEl = document.createElement('p'); nameEl.className = 'file-name'; zone.appendChild(nameEl); }
+        nameEl.textContent = input.files[0].name;
+      }
+    };
+
+    // Upload headshot to Cloudinary and return the URL
+    async function vcpUploadHeadshot(file) {
+      if (!file) return '';
+      // If Cloudinary not configured yet, skip
+      if (VCP_CLOUDINARY_CLOUD === 'YOUR_CLOUD_NAME') return '';
+
+      var formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', VCP_CLOUDINARY_PRESET);
+      formData.append('folder', 'vcp_headshots');
+
+      try {
+        var res = await fetch('https://api.cloudinary.com/v1_1/' + VCP_CLOUDINARY_CLOUD + '/image/upload', {
+          method: 'POST',
+          body: formData
+        });
+        var data = await res.json();
+        return data.secure_url || '';
+      } catch (err) {
+        console.error('Cloudinary upload error:', err);
+        return '';
+      }
+    }
+
+    // Gather all form data into an object matching Supabase columns
+    function vcpGatherFormData(headshotUrl) {
+      var getVal = function(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; };
+      var getRadio = function(name) { var el = document.querySelector('input[name="' + name + '"]:checked'); return el ? el.value : ''; };
+      var getChecked = function(name) {
+        var vals = [];
+        document.querySelectorAll('input[name="' + name + '"]:checked').forEach(function(cb) { vals.push(cb.value); });
+        return vals;
+      };
+
+      var hearAbout = getRadio('vcpHearAbout');
+      if (hearAbout === 'Other') {
+        var otherVal = getVal('vcpHearAboutOther');
+        if (otherVal) hearAbout = 'Other: ' + otherVal;
+      }
+
+      return {
+        cohort: vcpCurrentCohort || 'Summer 2026',
+        first_name: getVal('vcpFirstName'),
+        last_name: getVal('vcpLastName'),
+        middle_name: getVal('vcpMiddleName'),
+        preferred_name: getVal('vcpPreferredName'),
+        email: getVal('vcpEmail'),
+        phone: getVal('vcpPhone'),
+        country: getVal('vcpCountry'),
+        state: getVal('vcpState'),
+        city: getVal('vcpCity'),
+        zip: getVal('vcpZip'),
+        province: getVal('vcpProvince'),
+        postal_code: getVal('vcpPostalCode'),
+        military_status: getRadio('vcpMilStatus'),
+        branch: getRadio('vcpBranch'),
+        service_start: getVal('vcpServiceStart'),
+        service_end: getVal('vcpServiceEnd'),
+        previous_cohort: getRadio('vcpPreviousCohort'),
+        coaching_types: getChecked('vcpCoachingType').join(', '),
+        accomplishments: getVal('vcpAccomplishments'),
+        passions: getVal('vcpPassions'),
+        commitment: getRadio('vcpCommitment'),
+        hear_about: hearAbout,
+        referred_by: getVal('vcpReferredBy'),
+        obstacles: getVal('vcpObstacles'),
+        availability: getVal('vcpAvailability'),
+        bio: getVal('vcpBio'),
+        headshot_url: headshotUrl || '',
+        status: 'unmatched'
+      };
+    }
+
+    // Submit to Supabase
+    async function vcpSendToSupabase(data) {
+      var res = await fetch(VCP_SUPABASE_URL + '/rest/v1/clients', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': VCP_SUPABASE_KEY,
+          'Authorization': 'Bearer ' + VCP_SUPABASE_KEY,
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (!res.ok) {
+        var err = await res.json();
+        throw new Error(err.message || 'Submission failed');
+      }
+
+      return await res.json();
+    }
+
+    window.vcpSubmitForm = async function() {
+      if (!vcpValidateStep(6)) return;
+
+      // Show loading state
+      var submitBtn = document.querySelector('.btn-submit');
+      var originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Submitting...';
+      submitBtn.style.opacity = '0.7';
+      submitBtn.style.pointerEvents = 'none';
+
+      try {
+        // 1. Upload headshot to Cloudinary
+        var file = document.getElementById('vcpHeadshot').files[0];
+        var headshotUrl = await vcpUploadHeadshot(file);
+
+        // 2. Gather form data
+        var formData = vcpGatherFormData(headshotUrl);
+
+        // 3. Send to Supabase
+        var result = await vcpSendToSupabase(formData);
+
+        // 4. Show success
+        document.getElementById('vcp-step-6').classList.remove('active');
+        document.getElementById('vcpCompletionScreen').classList.add('active');
+        document.getElementById('vcpProgressBar').style.display = 'none';
+
+      } catch (err) {
+        console.error('Submission error:', err);
+        submitBtn.textContent = originalText;
+        submitBtn.style.opacity = '1';
+        submitBtn.style.pointerEvents = 'auto';
+        alert('There was an error submitting your application. Please try again. If the problem persists, contact us at engage@veteranscoachingproject.org');
+      }
+    };
+
+    document.querySelector('.vcp-form-wrapper').addEventListener('input', function(e) {
+      var fg = e.target.closest('.field-group');
+      if (fg) fg.classList.remove('invalid');
+    });
+
+    document.querySelector('.vcp-form-wrapper').addEventListener('change', function(e) {
+      var fg = e.target.closest('.field-group');
+      if (fg) fg.classList.remove('invalid');
+    });
+  })();
+</script>

@@ -1,0 +1,2636 @@
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  .vd * { margin:0; padding:0; box-sizing:border-box; }
+  .vd {
+    font-family:'DM Sans',sans-serif;
+    color:#343963;
+    background:#f4f5f7;
+    min-height:100vh;
+    width:100vw;
+    margin-left:calc(-50vw + 50%);
+    margin-right:calc(-50vw + 50%);
+  }
+
+  /* TOPBAR */
+  .vd-top {
+    background:#343963;
+    padding:16px 28px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:sticky;
+    top:0;
+    z-index:100;
+  }
+  .vd-top h1 { font-family:'DM Serif Display',serif; color:#fff; font-size:22px; font-weight:400; }
+  .vd-top-r { display:flex; align-items:center; gap:12px; }
+  .vd-sel {
+    background:rgba(255,255,255,0.12);
+    border:1px solid rgba(255,255,255,0.2);
+    color:#fff;
+    padding:8px 14px;
+    border-radius:8px;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:600;
+    outline:none;
+    cursor:pointer;
+  }
+  .vd-sel option { color:#343963; background:#fff; }
+  .vd-pills { display:flex; gap:6px; }
+  .vd-pill {
+    padding:4px 12px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:700;
+    background:rgba(255,255,255,0.1);
+    color:rgba(255,255,255,0.6);
+  }
+  .vd-pill .n { color:#fff; }
+  .vd-pill.p1 .n { color:#fca5a5; }
+  .vd-pill.p2 .n { color:#93c5fd; }
+  .vd-pill.p3 .n { color:#86efac; }
+
+  /* TOOLBAR */
+  .vd-bar {
+    background:#fff;
+    border-bottom:1px solid #e8e9ee;
+    padding:0 28px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .vd-tabs { display:flex; }
+  .vd-tab {
+    padding:13px 18px;
+    font-size:12px;
+    font-weight:600;
+    color:#646C91;
+    cursor:pointer;
+    border-bottom:2px solid transparent;
+    transition:all 0.12s;
+  }
+  .vd-tab:hover { color:#343963; }
+  .vd-tab.on { color:#343963; border-bottom-color:#343963; }
+  .vd-srch {
+    padding:7px 12px 7px 32px;
+    border:1px solid #e8e9ee;
+    border-radius:7px;
+    font-family:inherit;
+    font-size:13px;
+    width:220px;
+    outline:none;
+    background:#f8f8fa url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23646C91' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m21 21-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z'/%3E%3C/svg%3E") no-repeat 8px center;
+    background-size:15px;
+  }
+  .vd-srch:focus { border-color:#343963; background-color:#fff; }
+
+  /* VIEW TOGGLE */
+  .vd-view-toggle {
+    display:flex;
+    background:#e8e9ee;
+    border-radius:8px;
+    padding:3px;
+    gap:2px;
+  }
+  .vd-view-btn {
+    padding:8px 18px;
+    border-radius:6px;
+    border:none;
+    background:none;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:600;
+    color:#646C91;
+    cursor:pointer;
+    transition:all 0.15s;
+  }
+  .vd-view-btn.on {
+    background:#343963;
+    color:#fff;
+    box-shadow:0 2px 6px rgba(52,57,99,0.2);
+  }
+  .vd-view-btn:hover:not(.on) { color:#343963; }
+
+  /* FILTER ROW */
+  .vd-filters {
+    background:#fff;
+    padding:10px 28px;
+    border-bottom:1px solid #e8e9ee;
+    display:flex;
+    gap:8px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .vd-flabel {
+    font-size:11px;
+    font-weight:700;
+    color:#646C91;
+    text-transform:uppercase;
+    letter-spacing:0.3px;
+  }
+  .vd-fsel {
+    padding:6px 10px;
+    border:1px solid #e8e9ee;
+    border-radius:6px;
+    font-family:inherit;
+    font-size:12px;
+    font-weight:600;
+    color:#343963;
+    background:#f8f8fa;
+    cursor:pointer;
+    outline:none;
+  }
+  .vd-fsel:focus { border-color:#343963; }
+  .vd-fsel.active-filter { background:#343963; color:#fff; border-color:#343963; }
+  .vd-fclear {
+    padding:6px 12px;
+    border:1px solid #e8e9ee;
+    border-radius:6px;
+    background:none;
+    font-family:inherit;
+    font-size:11px;
+    font-weight:600;
+    color:#646C91;
+    cursor:pointer;
+  }
+  .vd-fclear:hover { background:#fee2e2; color:#991b1b; border-color:#fca5a5; }
+
+  /* MAIN */
+  .vd-main {
+    display:grid;
+    grid-template-columns:340px 1fr;
+    min-height:calc(100vh - 155px);
+  }
+
+  /* LIST */
+  .vd-list {
+    background:#fff;
+    border-right:1px solid #e8e9ee;
+    overflow-y:auto;
+    max-height:calc(100vh - 155px);
+  }
+  .vd-lh {
+    padding:10px 18px;
+    font-size:11px;
+    font-weight:700;
+    color:#646C91;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    border-bottom:1px solid #e8e9ee;
+    position:sticky;
+    top:0;
+    background:#fff;
+    z-index:10;
+  }
+  .vd-li {
+    padding:12px 18px;
+    border-bottom:1px solid #f0f1f5;
+    cursor:pointer;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    transition:background 0.1s;
+  }
+  .vd-li:hover { background:#f8f8fa; }
+  .vd-li.sel { background:#eef0f8; border-left:3px solid #343963; }
+  .vd-av {
+    width:38px; height:38px;
+    border-radius:50%;
+    background:#343963;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    font-size:12px;
+    flex-shrink:0;
+  }
+  .vd-av.cav { background:#455560; }
+  .vd-av.mav { background:#4a7c59; }
+  .vd-av.cav { background:#646C91; }
+  .vd-li-i { flex:1; min-width:0; }
+  .vd-li-n { font-weight:600; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .vd-li-m { font-size:11px; color:#646C91; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .vd-li-r { display:flex; flex-direction:column; align-items:flex-end; gap:3px; flex-shrink:0; }
+  .vd-mn { padding:2px 7px; border-radius:10px; font-size:10px; font-weight:700; }
+  .vd-mn.p1 { background:#fef2f2; color:#dc2626; }
+  .vd-mn.p2 { background:#eff6ff; color:#2563eb; }
+  .vd-mn.p3 { background:#f0fdf4; color:#16a34a; }
+  .vd-ms { font-size:10px; font-weight:600; color:#646C91; }
+
+  /* DETAIL */
+  .vd-det {
+    padding:24px 28px;
+    overflow-y:auto;
+    max-height:calc(100vh - 155px);
+  }
+  .vd-empty {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    height:100%;
+    color:#646C91;
+    text-align:center;
+    padding:60px;
+  }
+  .vd-empty-ic { font-size:48px; margin-bottom:16px; opacity:0.4; }
+  .vd-empty h3 { font-size:18px; color:#343963; margin-bottom:6px; }
+
+  /* COMPARE MODE: side by side */
+  .vd-compare {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+  }
+  .vd-compare-col {
+    min-width:0;
+    overflow:hidden;
+  }
+  .vd-compare-col .vd-dh {
+    flex-wrap:wrap;
+  }
+  .vd-compare-col .vd-dh-info {
+    min-width:150px;
+  }
+  .vd-compare-col .vd-dh-badges {
+    flex-basis:100%;
+    margin-top:4px;
+  }
+  .vd-compare-col .vd-dh-nm {
+    font-size:20px;
+  }
+  .vd-compare-col .vd-2col {
+    grid-template-columns:1fr;
+  }
+  .vd-compare-header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:16px;
+    padding:12px 16px;
+    background:#343963;
+    border-radius:10px;
+    color:#fff;
+  }
+  .vd-compare-header.coach-hdr {
+    background:#455560;
+  }
+  .vd-compare-header h3 { font-size:14px; font-weight:700; color:#fff; }
+  .vd-compare-header span { font-size:12px; color:rgba(255,255,255,0.7); }
+  .vd-x-btn {
+    width:28px; height:28px;
+    border-radius:50%;
+    border:none;
+    background:rgba(255,255,255,0.2);
+    color:#fff;
+    cursor:pointer;
+    font-size:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .vd-x-btn:hover { background:rgba(255,255,255,0.3); }
+  .vd-match-top-btn {
+    padding:8px 24px;
+    border:none;
+    border-radius:8px;
+    background:#16a34a;
+    color:#fff;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+    margin-bottom:16px;
+    width:100%;
+    transition:all 0.15s;
+  }
+  .vd-match-top-btn:hover { background:#15803d; }
+
+  /* DETAIL HEADER - hero bar */
+  .vd-dh {
+    background:#343963;
+    border-radius:12px;
+    padding:20px 24px;
+    margin-bottom:18px;
+    display:flex;
+    align-items:center;
+    gap:16px;
+    color:#fff;
+  }
+  .vd-dh-av {
+    width:52px; height:52px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.15);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    font-size:18px;
+    flex-shrink:0;
+  }
+  .vd-dh-av.coach { background:rgba(255,255,255,0.15); }
+  .vd-dh-info { flex:1; min-width:0; }
+  .vd-dh-nm { font-family:'DM Serif Display',serif; font-size:24px; font-weight:400; color:#fff; }
+  .vd-dh-sub { font-size:12px; color:rgba(255,255,255,0.6); margin-top:2px; }
+  .vd-dh-badges { display:flex; gap:8px; flex-shrink:0; align-items:center; flex-wrap:wrap; }
+  .vd-dh-badge {
+    padding:5px 14px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:700;
+    background:rgba(255,255,255,0.15);
+    color:#fff;
+  }
+  .vd-dh-badge.p1 { background:rgba(220,38,38,0.25); color:#fca5a5; }
+  .vd-dh-badge.p2 { background:rgba(37,99,235,0.25); color:#93c5fd; }
+  .vd-dh-badge.p3 { background:rgba(22,163,74,0.25); color:#86efac; }
+
+  /* ADMIN CONTROLS - inline bar */
+  .vd-admin-bar {
+    display:flex;
+    gap:10px;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+    padding:12px 16px;
+    background:#fff;
+    border:1px solid #e8e9ee;
+    border-radius:10px;
+  }
+  .vd-admin-bar label {
+    font-size:11px;
+    font-weight:700;
+    color:#646C91;
+    text-transform:uppercase;
+    letter-spacing:0.3px;
+  }
+  .vd-admin-bar .vd-esel,
+  .vd-admin-bar .vd-einp {
+    text-align:left;
+  }
+  .vd-admin-sep {
+    width:1px;
+    height:24px;
+    background:#e8e9ee;
+  }
+  .vd-del-btn {
+    padding:6px 14px;
+    border-radius:6px;
+    font-size:12px;
+    font-weight:600;
+    cursor:pointer;
+    border:1px solid #fee2e2;
+    background:#fff;
+    color:#991b1b;
+    margin-left:auto;
+    transition:all 0.15s;
+    white-space:nowrap;
+  }
+  .vd-del-btn:hover { background:#fee2e2; border-color:#fca5a5; }
+
+  /* COLLAPSIBLE SECTIONS */
+  .vd-collapse {
+    margin-bottom:14px;
+  }
+  .vd-collapse-header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px 16px;
+    background:#fff;
+    border:1px solid #e8e9ee;
+    border-radius:8px;
+    cursor:pointer;
+    transition:all 0.15s;
+    user-select:none;
+  }
+  .vd-collapse-header:hover { background:#f8f8fa; }
+  .vd-collapse-header.open { border-radius:8px 8px 0 0; border-bottom:none; }
+  .vd-collapse-title {
+    font-size:12px;
+    font-weight:700;
+    color:#646C91;
+    text-transform:uppercase;
+    letter-spacing:0.4px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .vd-collapse-arrow {
+    font-size:14px;
+    color:#646C91;
+    transition:transform 0.2s;
+  }
+  .vd-collapse-header.open .vd-collapse-arrow { transform:rotate(180deg); }
+  .vd-collapse-body {
+    display:none;
+    background:#fff;
+    border:1px solid #e8e9ee;
+    border-top:none;
+    border-radius:0 0 8px 8px;
+    padding:14px 16px;
+  }
+  .vd-collapse-body.open { display:block; }
+  .vd-collapse-2col {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+  }
+  .vd-compare-col .vd-collapse-2col {
+    grid-template-columns:1fr;
+  }
+
+  /* BIO SECTIONS - more readable */
+  .vd-bio-section {
+    margin-bottom:16px;
+  }
+  .vd-bio-label {
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    color:#646C91;
+    margin-bottom:8px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .vd-bio {
+    background:#fff;
+    border:1px solid #e8e9ee;
+    border-radius:10px;
+    padding:16px 18px;
+    font-size:14px;
+    line-height:1.8;
+    color:#343963;
+  }
+
+  /* ── PROFILE CARDS ── */
+  .vd-glass {
+    background:#ffffff;
+    border:1px solid #e4e6ef;
+    border-radius:14px;
+    padding:22px 24px;
+    box-shadow:0 2px 12px rgba(52,57,99,0.05);
+    transition:all 0.2s ease;
+  }
+  .vd-glass:hover {
+    box-shadow:0 6px 24px rgba(52,57,99,0.1);
+    border-color:#d0d3e2;
+  }
+  .vd-glass-label {
+    font-size:12px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.8px;
+    color:#646C91;
+    margin-bottom:14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .vd-glass-label .gl-icon {
+    width:30px; height:30px;
+    border-radius:8px;
+    background:linear-gradient(135deg,#343963,#646C91);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    flex-shrink:0;
+  }
+  .vd-glass-body {
+    font-size:15px;
+    line-height:1.85;
+    color:#343963;
+    word-wrap:break-word;
+  }
+  .vd-glass-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin-bottom:16px;
+  }
+  .vd-glass-grid.single { grid-template-columns:1fr; }
+  .vd-glass-bg {
+    background:#f5f6fa;
+    padding:20px;
+    border-radius:16px;
+    margin-bottom:16px;
+    border:1px solid #eef0f5;
+  }
+  /* Hero with headshot */
+  .vd-dh-photo {
+    width:64px; height:64px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid rgba(255,255,255,0.3);
+    flex-shrink:0;
+  }
+  /* Action buttons row */
+  .vd-actions {
+    display:flex;
+    gap:8px;
+    margin-bottom:16px;
+  }
+  .vd-action-btn {
+    padding:8px 16px;
+    border-radius:8px;
+    border:1px solid #e4e6ef;
+    background:#fff;
+    font-family:inherit;
+    font-size:12px;
+    font-weight:600;
+    color:#343963;
+    cursor:pointer;
+    transition:all 0.15s;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .vd-action-btn:hover { background:#f5f6fa; border-color:#d0d3e2; }
+  .vd-action-btn.primary { background:#343963; color:#fff; border-color:#343963; }
+  .vd-action-btn.primary:hover { background:#455560; }
+
+  /* SESSION BUILDER */
+  .vd-sess-container { }
+  .vd-sess-row {
+    background:#fff;
+    border:1px solid #e8eaf0;
+    border-radius:10px;
+    padding:12px 14px;
+    margin-bottom:8px;
+  }
+  .vd-sess-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:8px;
+  }
+  .vd-sess-num {
+    font-size:12px;
+    font-weight:700;
+    color:#646C91;
+    background:#f0f1f5;
+    padding:2px 10px;
+    border-radius:4px;
+  }
+  .vd-sess-del {
+    width:24px;height:24px;
+    border-radius:50%;
+    border:1px solid #fca5a5;
+    background:#fff;
+    color:#991b1b;
+    cursor:pointer;
+    font-size:12px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .vd-sess-del:hover { background:#fee2e2; }
+  .vd-sess-fields {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+  .vd-sess-lbl {
+    display:block !important;
+    font-size:11px !important;
+    font-weight:600 !important;
+    color:#646C91 !important;
+    margin-bottom:3px !important;
+  }
+  .vd-sess-input {
+    width:100%;
+    padding:7px 10px;
+    border:1px solid #e4e6ef;
+    border-radius:6px;
+    font-family:inherit;
+    font-size:13px;
+    color:#343963;
+    outline:none;
+  }
+  .vd-sess-input:focus { border-color:#343963; }
+  .vd-sess-full { width:100%; }
+  .vd-add-sess-btn {
+    padding:8px 16px;
+    border-radius:8px;
+    border:1px dashed #d0d3e2;
+    background:none;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:600;
+    color:#646C91;
+    cursor:pointer;
+    width:100%;
+    margin-top:8px;
+    transition:all 0.15s;
+  }
+  .vd-add-sess-btn:hover { border-color:#343963; color:#343963; }
+
+  /* CARDS */
+  .vd-card {
+    background:#fff;
+    border:1px solid #e8e9ee;
+    border-radius:10px;
+    padding:16px;
+    margin-bottom:14px;
+  }
+  .vd-2col {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin-bottom:14px;
+  }
+  .vd-2col > .vd-card { margin-bottom:0; }
+  .vd-ct { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#646C91; margin-bottom:10px; }
+  .vd-rw {
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    padding:6px 0;
+    border-bottom:1px solid #f0f1f5;
+  }
+  .vd-rw:last-child { border-bottom:none; }
+  .vd-rl { font-size:12px; color:#646C91; flex-shrink:0; }
+  .vd-rv { font-size:12px; font-weight:600; color:#343963; text-align:right; max-width:65%; word-wrap:break-word; }
+  .vd-bio {
+    background:#f8f9fc;
+    border:1px solid #e8eaf0;
+    border-radius:12px;
+    padding:18px 20px;
+    font-size:15px;
+    line-height:1.85;
+    color:#343963;
+    margin-bottom:14px;
+  }
+  .vd-bio-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; color:#646C91; margin-bottom:8px; }
+
+  /* EDIT CONTROLS */
+  .vd-esel {
+    padding:4px 8px;
+    border:1px solid #e8e9ee;
+    border-radius:5px;
+    font-family:inherit;
+    font-size:12px;
+    font-weight:600;
+    color:#343963;
+    background:#fff;
+    cursor:pointer;
+    outline:none;
+  }
+  .vd-esel:focus { border-color:#343963; }
+  .vd-einp {
+    padding:4px 8px;
+    border:1px solid #e8e9ee;
+    border-radius:5px;
+    font-family:inherit;
+    font-size:12px;
+    color:#343963;
+    text-align:right;
+    width:160px;
+    outline:none;
+  }
+  .vd-einp:focus { border-color:#343963; }
+  .vd-wbtn {
+    padding:4px 10px;
+    border-radius:5px;
+    font-size:11px;
+    font-weight:600;
+    cursor:pointer;
+    border:none;
+  }
+  .vd-wbtn.y { background:#d1fae5; color:#065f46; }
+  .vd-wbtn.n { background:#fee2e2; color:#991b1b; }
+  .vd-wbtn:hover { opacity:0.8; }
+
+  /* BADGES */
+  .vd-badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; }
+  .vd-badge.applied { background:#f3f4f6; color:#4b5563; }
+  .vd-badge.reviewed { background:#e0e7ff; color:#4338ca; }
+  .vd-badge.waitlisted { background:#fef3c7; color:#92400e; }
+  .vd-badge.matched { background:#dbeafe; color:#1d4ed8; }
+  .vd-badge.active { background:#d1fae5; color:#065f46; }
+  .vd-badge.completed { background:#f0fdf4; color:#16a34a; }
+  .vd-badge.dropped { background:#fee2e2; color:#991b1b; }
+  .vd-badge.coach-dropped { background:#fef3c7; color:#92400e; }
+  .vd-badge.extended { background:#e0e7ff; color:#4338ca; }
+  .vd-badge.deferred { background:#f5f3ff; color:#6d28d9; }
+  .vd-tag { padding:3px 9px; border-radius:100px; font-size:10px; font-weight:600; background:#eef0f8; color:#343963; display:inline-block; margin:2px; }
+
+  /* MATCH BANNER */
+  .vd-mbanner {
+    background:linear-gradient(135deg,#343963,#455560);
+    border-radius:10px;
+    padding:16px 18px;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:16px;
+  }
+  .vd-mbanner-l { display:flex; align-items:center; gap:12px; }
+  .vd-mbanner-av { width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; color:#fff; }
+  .vd-mbanner h4 { font-size:14px; color:#fff; }
+  .vd-mbanner p { font-size:11px; color:rgba(255,255,255,0.7); }
+  .vd-mbanner-st { padding:4px 12px; border-radius:20px; font-size:11px; font-weight:700; background:rgba(255,255,255,0.2); color:#fff; }
+
+  /* COACH CARDS */
+  .vd-ch { display:flex; align-items:center; justify-content:space-between; margin:20px 0 12px; }
+  .vd-ch h3 { font-family:'DM Serif Display',serif; font-size:18px; font-weight:400; }
+  .vd-csrch {
+    padding:7px 12px;
+    border:1px solid #e8e9ee;
+    border-radius:7px;
+    font-family:inherit;
+    font-size:12px;
+    width:200px;
+    outline:none;
+  }
+  .vd-csrch:focus { border-color:#343963; }
+  .vd-cgrid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:12px; margin-bottom:20px; }
+  .vd-cc {
+    background:#fff;
+    border:2px solid #e8e9ee;
+    border-radius:10px;
+    padding:14px;
+    cursor:pointer;
+    transition:all 0.15s;
+  }
+  .vd-cc:hover { border-color:#343963; box-shadow:0 4px 16px rgba(52,57,99,0.08); }
+  .vd-cc.dim { opacity:0.4; }
+  .vd-cc-top { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .vd-cc-nm { font-size:13px; font-weight:700; }
+  .vd-cc-em { font-size:11px; color:#646C91; }
+  .vd-cc-tags { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:8px; }
+  .vd-cc-tag { padding:2px 7px; border-radius:5px; font-size:10px; font-weight:700; background:#eef0f8; color:#455560; }
+  .vd-cc-tag.cm { background:#dbeafe; color:#1d4ed8; }
+  .vd-cc-rw { display:flex; justify-content:space-between; padding:3px 0; font-size:11px; border-bottom:1px solid #f0f1f5; }
+  .vd-cc-rw:last-child { border-bottom:none; }
+  .vd-cc-rl { color:#646C91; }
+  .vd-cc-rv { font-weight:600; color:#343963; }
+
+  /* HISTORY */
+  .vd-hi { display:flex; gap:10px; padding:6px 0; }
+  .vd-hd { width:8px; height:8px; border-radius:50%; margin-top:4px; flex-shrink:0; }
+  .vd-hd.g { background:#16a34a; }
+  .vd-hd.w { background:#d97706; }
+  .vd-hd.b { background:#dc2626; }
+  .vd-hc { font-size:12px; font-weight:600; }
+  .vd-hdt { font-size:11px; color:#646C91; }
+
+  /* TOAST */
+  .vd-toast {
+    position:fixed;
+    bottom:24px;
+    right:24px;
+    padding:12px 20px;
+    border-radius:10px;
+    background:#343963;
+    color:#fff;
+    font-family:'DM Sans',sans-serif;
+    font-size:13px;
+    font-weight:600;
+    z-index:500;
+    transform:translateY(80px);
+    opacity:0;
+    transition:all 0.3s;
+  }
+  .vd-toast.show { transform:translateY(0); opacity:1; }
+  .vd-toast.err { background:#dc2626; }
+  .vd-toast.ok { background:#16a34a; }
+
+  .vd-load { display:flex; align-items:center; justify-content:center; padding:60px; color:#646C91; }
+  .vd-spin { width:20px; height:20px; border:3px solid #e8e9ee; border-top-color:#343963; border-radius:50%; animation:vdspin 0.8s linear infinite; margin-right:10px; }
+  @keyframes vdspin { to { transform:rotate(360deg); } }
+
+  @media(max-width:900px){
+    .vd-main { grid-template-columns:1fr; }
+    .vd-compare { grid-template-columns:1fr; }
+    .vd-2col { grid-template-columns:1fr; }
+    .vd-glass-grid { grid-template-columns:1fr; }
+    .vd-pills { display:none; }
+    .vd-top { flex-wrap:wrap; gap:10px; }
+  }
+</style>
+
+<div class="vd" id="vdApp">
+  <div class="vd-top">
+    <h1>Client Matching Dashboard</h1>
+    <div class="vd-top-r">
+      <div class="vd-pills" id="vdPills">
+        <div class="vd-pill"><span id="sTLabel">Clients</span> <span class="n" id="sT">—</span></div>
+        <div class="vd-pill"><span id="sMLabel">Active</span> <span class="n" id="sM">—</span></div>
+        <div class="vd-pill p1"><span id="s1Label">P1</span> <span class="n" id="s1">—</span></div>
+        <div class="vd-pill p2"><span id="s2Label">P2</span> <span class="n" id="s2">—</span></div>
+        <div class="vd-pill p3"><span id="s3Label">P3</span> <span class="n" id="s3">—</span></div>
+      </div>
+      <select class="vd-sel" id="cohSel" onchange="vdLoad()"><option>Loading...</option></select>
+      <button class="vd-sel" id="newCohBtn" onclick="vdShowNewCohort()" style="cursor:pointer;background:rgba(255,255,255,0.2);font-weight:700;">+ New Cohort</button>
+    </div>
+  </div>
+
+  <!-- New Cohort Modal -->
+  <div id="vdNewCohModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(52,57,99,0.5);z-index:200;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:14px;padding:28px;width:420px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+      <h3 style="font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:16px;">Create New Cohort</h3>
+      <div style="margin-bottom:14px;">
+        <label style="font-size:13px;font-weight:600;color:#646C91;display:block;margin-bottom:4px;">Season</label>
+        <select id="ncSeason" class="vd-esel" style="width:100%;padding:10px 14px;font-size:14px;">
+          <option value="Spring">Spring</option>
+          <option value="Summer">Summer</option>
+          <option value="Fall">Fall</option>
+          <option value="Winter">Winter</option>
+        </select>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label style="font-size:13px;font-weight:600;color:#646C91;display:block;margin-bottom:4px;">Year</label>
+        <input type="number" id="ncYear" class="vd-einp" style="width:100%;padding:10px 14px;font-size:14px;text-align:left;" value="2026">
+      </div>
+      <div style="margin-bottom:14px;">
+        <label style="font-size:13px;font-weight:600;color:#646C91;display:block;margin-bottom:4px;">Status</label>
+        <select id="ncStatus" class="vd-esel" style="width:100%;padding:10px 14px;font-size:14px;">
+          <option value="Planning">Planning (upcoming)</option>
+          <option value="Active">Active (accepting applications now)</option>
+        </select>
+      </div>
+      <p style="font-size:12px;color:#646C91;margin-bottom:16px;">This will automatically roll over all waitlisted clients and coaches from the previous cohort.</p>
+      <div style="display:flex;gap:10px;">
+        <button onclick="vdCloseNewCohort()" style="flex:1;padding:12px;border-radius:8px;border:1px solid #e8e9ee;background:none;font-family:inherit;font-size:14px;font-weight:600;color:#646C91;cursor:pointer;">Cancel</button>
+        <button onclick="vdCreateCohort()" style="flex:1;padding:12px;border-radius:8px;border:none;background:#343963;color:#fff;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;">Create Cohort</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="vd-bar">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <div class="vd-view-toggle">
+        <button class="vd-view-btn on" id="viewClients" onclick="vdSwitchView('clients')">👤 Clients</button>
+        <button class="vd-view-btn" id="viewCoaches" onclick="vdSwitchView('coaches')">🎓 Coaches</button>
+        <button class="vd-view-btn" id="viewCohorts" onclick="vdSwitchView('cohorts')">⚙️ Cohorts</button>
+      </div>
+      <div class="vd-tabs" id="vdTabsContainer">
+        <div class="vd-tab on" onclick="vdTab('all',this)">All</div>
+        <div class="vd-tab" onclick="vdTab('unmatched',this)">Unmatched</div>
+        <div class="vd-tab" onclick="vdTab('hascoach',this)">Has Coach</div>
+      </div>
+    </div>
+    <input type="text" class="vd-srch" id="vdSrch" placeholder="Search clients..." oninput="vdRenderList()">
+  </div>
+
+  <div class="vd-filters">
+    <span class="vd-flabel">Filter:</span>
+    <select class="vd-fsel" id="fStatus" onchange="vdApplyFilters()">
+      <option value="">All Statuses</option>
+      <option value="Waitlisted">Waitlisted</option>
+      <option value="Active">Active</option>
+      <option value="Completed">Completed</option>
+      <option value="Dropped">Dropped</option>
+      <option value="Coach Dropped">Coach Dropped</option>
+      <option value="Extended">Extended</option>
+      <option value="Deferred">Deferred</option>
+    </select>
+    <select class="vd-fsel" id="fPriority" onchange="vdApplyFilters()">
+      <option value="">All Priorities</option>
+      <option value="1">P1 — Waitlisted / Coach Dropped</option>
+      <option value="2">P2 — New Applicant</option>
+      <option value="3">P3 — Active / Completed / Client Dropped</option>
+      <option value="0">Unassigned</option>
+    </select>
+    <select class="vd-fsel" id="fCategory" onchange="vdApplyFilters()">
+      <option value="">All Categories</option>
+      <option value="Career Coaching">Career</option>
+      <option value="Life Coaching">Life</option>
+      <option value="Business Coaching">Business</option>
+      <option value="Wellness Coaching">Wellness</option>
+      <option value="Executive Coaching">Executive</option>
+      <option value="none">Unassigned</option>
+    </select>
+    <select class="vd-fsel" id="fWaiver" onchange="vdApplyFilters()">
+      <option value="">Waiver: All</option>
+      <option value="signed">Signed</option>
+      <option value="unsigned">Not Signed</option>
+    </select>
+    <button class="vd-fclear" onclick="vdClearFilters()">Clear All</button>
+  </div>
+
+  <div class="vd-main">
+    <div class="vd-list" id="vdList"><div class="vd-load"><div class="vd-spin"></div>Loading...</div></div>
+    <div class="vd-det" id="vdDet">
+      <div class="vd-empty"><div class="vd-empty-ic">👈</div><h3>Select a Client</h3><p>Click a client to see full details and coach recommendations</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="vd-toast" id="vdToast"></div>
+
+<script>
+(function(){
+  var SU='https://gerqcnkjhsloskhbmgil.supabase.co';
+  var SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlcnFjbmtqaHNsb3NraGJtZ2lsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI5MDg0MzksImV4cCI6MjA4ODQ4NDQzOX0.DOfieo_KHHqBvoaiwFjysoAX6c49xc3zIv04BCUPCO4';
+
+  var allC=[],allK=[],cohorts=[],curCoh=null,curTab='all',selId=null;
+  var clientRichCache={}, coachRichCache={}; // cache rich data
+  var compareCoachId=null; // for side-by-side mode
+  var filters={status:'',priority:'',category:'',waiver:''};
+  var curView='clients'; // 'clients' or 'coaches'
+  var selCoachId=null; // selected coach in coaches view
+  function hdr(){ return {'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'}; }
+  function api(p,m,b){
+    var o={method:m||'GET',headers:hdr()};
+    if(b) o.body=JSON.stringify(b);
+    return fetch(SU+'/rest/v1/'+p,o).then(function(r){
+      if(!r.ok) throw new Error(r.statusText);
+      if(r.status===204 || m==='DELETE') return []; // no body on delete
+      return r.json();
+    });
+  }
+  function toast(m,t){var e=document.getElementById('vdToast');e.textContent=m;e.className='vd-toast '+(t||'')+' show';setTimeout(function(){e.classList.remove('show');},3000);}
+  function ini(f,l){return((f||'')[0]||'')+((l||'')[0]||'');}
+  function esc(s){return(s||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+
+  window.vdToggle=function(id){
+    var h=document.getElementById(id+'_h');
+    var b=document.getElementById(id+'_b');
+    if(h&&b){ h.classList.toggle('open'); b.classList.toggle('open'); }
+  };
+
+  // Priority helpers — handle both "P1" and "Priority 1" formats
+  function pNum(p){
+    if(!p) return '2';
+    var s=String(p).trim();
+    if(s==='P1'||s==='Priority 1') return '1';
+    if(s==='P2'||s==='Priority 2') return '2';
+    if(s==='P3'||s==='Priority 3') return '3';
+    return '0'; // Unassigned
+  }
+  function pLabel(p){
+    var n=pNum(p);
+    if(n==='1') return 'P1';
+    if(n==='2') return 'P2';
+    if(n==='3') return 'P3';
+    return '—';
+  }
+  function pClass(p){
+    var n=pNum(p);
+    if(n==='1') return 'p1';
+    if(n==='2') return 'p2';
+    if(n==='3') return 'p3';
+    return '';
+  }
+  function pDesc(p){
+    var n=pNum(p);
+    if(n==='1') return 'Waitlisted or coach dropped';
+    if(n==='2') return 'New applicant';
+    if(n==='3') return 'Active, completed, or client dropped';
+    return 'Unassigned';
+  }
+  function pMatch(p, filterVal){
+    if(!filterVal) return true;
+    return pNum(p) === pNum(filterVal);
+  }
+  // Fetch rich client data from old clients table
+  async function getClientRich(email){
+    if(!email) return null;
+    if(clientRichCache[email]) return clientRichCache[email];
+    try {
+      var rows = await api('clients?email=eq.'+encodeURIComponent(email)+'&limit=1');
+      if(rows.length){clientRichCache[email]=rows[0]; return rows[0];}
+    } catch(e){}
+    return null;
+  }
+
+  // Fetch rich coach data from old coaches table
+  async function getCoachRich(email){
+    if(!email) return null;
+    if(coachRichCache[email]) return coachRichCache[email];
+    try {
+      var rows = await api('coaches?email=eq.'+encodeURIComponent(email)+'&limit=1');
+      if(rows.length){coachRichCache[email]=rows[0]; return rows[0];}
+    } catch(e){}
+    return null;
+  }
+
+  // Find the best field value from an object (old table columns have varied names)
+  function pick(obj){
+    // pass field name candidates, return first truthy
+    for(var i=1;i<arguments.length;i++){
+      var k=arguments[i];
+      if(obj[k] && String(obj[k]).trim() && String(obj[k]).toLowerCase()!=='none') return String(obj[k]).trim();
+    }
+    return null;
+  }
+
+  // INIT
+  async function init(){
+    try{
+      cohorts=await api('cohorts?order=year.desc,season.desc');
+      var sel=document.getElementById('cohSel');
+      sel.innerHTML=cohorts.map(function(c){return '<option value="'+c.id+'" '+(c.status==='Active'?'selected':'')+'>'+c.cohort_name+(c.status==='Active'?' ●':'')+'</option>';}).join('');
+      var a=cohorts.find(function(c){return c.status==='Active';});
+      if(a) sel.value=a.id;
+      await vdLoad();
+    }catch(e){console.error(e);toast('Connection error','err');}
+  }
+
+  window.vdLoad=async function(){
+    var cid=document.getElementById('cohSel').value;
+    if(!cid) return;
+    curCoh=cid; selId=null; compareCoachId=null;
+    try{
+      allC=await api('v_client_dashboard?cohort_id=eq.'+cid+'&order=priority.asc,last_name.asc');
+      allK=await api('v_coach_dashboard?cohort_id=eq.'+cid+'&order=priority.asc,last_name.asc');
+      if(curView==='clients') vdStats();
+      else vdCoachStats();
+      vdRenderList();
+      var label=curView==='clients'?'Client':'Coach';
+      var count=curView==='clients'?allC.length:allK.length;
+      document.getElementById('vdDet').innerHTML='<div class="vd-empty"><div class="vd-empty-ic">👈</div><h3>Select a '+label+'</h3><p>'+count+' '+label.toLowerCase()+'s loaded</p></div>';
+    }catch(e){console.error(e);toast('Error loading','err');}
+  };
+
+  function vdStats(){
+    document.getElementById('sT').textContent=allC.length;
+    document.getElementById('sM').textContent=allC.filter(function(c){return c.status==='Active';}).length;
+    document.getElementById('s1').textContent=allC.filter(function(c){return pNum(c.priority)==='1';}).length;
+    document.getElementById('s2').textContent=allC.filter(function(c){return pNum(c.priority)==='2';}).length;
+    document.getElementById('s3').textContent=allC.filter(function(c){return pNum(c.priority)==='3';}).length;
+    document.getElementById('s1Label').textContent='P1';
+    document.getElementById('s2Label').textContent='P2';
+    document.getElementById('s3Label').textContent='P3';
+  }
+
+  window.vdTab=function(t,btn){
+    curTab=t;
+    document.querySelectorAll('.vd-tab').forEach(function(x){x.classList.remove('on');});
+    btn.classList.add('on');
+    vdRenderList();
+  };
+
+  // ── VIEW SWITCHING ──
+  window.vdSwitchView=function(view){
+    curView=view;
+    curTab='all';
+    selId=null;
+    selCoachId=null;
+
+    // Toggle buttons
+    document.getElementById('viewClients').classList.toggle('on',view==='clients');
+    document.getElementById('viewCoaches').classList.toggle('on',view==='coaches');
+    document.getElementById('viewCohorts').classList.toggle('on',view==='cohorts');
+
+    var bar=document.querySelector('.vd-bar');
+    var filters=document.querySelector('.vd-filters');
+    var main=document.querySelector('.vd-main');
+
+    if(view==='cohorts'){
+      // Hide normal UI, show cohort management
+      bar.style.display='none';
+      filters.style.display='none';
+      main.innerHTML='';
+      main.style.gridTemplateColumns='340px 1fr';
+      document.getElementById('sTLabel').textContent='Cohorts';
+      document.getElementById('sMLabel').textContent='Active';
+      document.getElementById('sT').textContent=cohorts.length;
+      document.getElementById('sM').textContent=cohorts.filter(function(c){return c.status==='Active';}).length;
+      document.getElementById('s1Label').textContent='Planning';
+      document.getElementById('s1').textContent=cohorts.filter(function(c){return c.status==='Planning';}).length;
+      document.getElementById('s2Label').textContent='Completed';
+      document.getElementById('s2').textContent=cohorts.filter(function(c){return c.status==='Completed';}).length;
+      document.getElementById('s3Label').textContent='';
+      document.getElementById('s3').textContent='';
+      main.innerHTML='<div class="vd-list" id="vdList" style="max-height:calc(100vh - 155px);overflow-y:auto;"></div>'
+        +'<div class="vd-det" id="vdDet" style="max-height:calc(100vh - 155px);overflow-y:auto;padding:24px 28px;">'
+        +'<div class="vd-empty"><div class="vd-empty-ic">⚙️</div><h3>Cohort Management</h3><p>Select a cohort to configure dates, links, and email settings</p></div>'
+        +'</div>';
+      vdRenderCohortList();
+      return;
+    }
+
+    // Show normal UI
+    bar.style.display='';
+    filters.style.display='';
+    main.innerHTML='<div class="vd-list" id="vdList"><div class="vd-load"><div class="vd-spin"></div>Loading...</div></div>'
+      +'<div class="vd-det" id="vdDet"><div class="vd-empty"><div class="vd-empty-ic">👈</div><h3>Select a '+(view==='clients'?'Client':'Coach')+'</h3><p>Click from the list to see details</p></div></div>';
+
+    // Update tabs
+    var tc=document.getElementById('vdTabsContainer');
+    if(view==='clients'){
+      tc.innerHTML='<div class="vd-tab on" onclick="vdTab(\'all\',this)">All</div>'
+        +'<div class="vd-tab" onclick="vdTab(\'unmatched\',this)">Unmatched</div>'
+        +'<div class="vd-tab" onclick="vdTab(\'hascoach\',this)">Has Coach</div>';
+      document.getElementById('vdSrch').placeholder='Search clients...';
+    } else {
+      tc.innerHTML='<div class="vd-tab on" onclick="vdTab(\'all\',this)">All</div>'
+        +'<div class="vd-tab" onclick="vdTab(\'unmatched\',this)">Unmatched</div>'
+        +'<div class="vd-tab" onclick="vdTab(\'hasclients\',this)">Has Clients</div>'
+        +'<div class="vd-tab" onclick="vdTab(\'Waitlisted\',this)">Waitlisted</div>'
+        +'<div class="vd-tab" onclick="vdTab(\'Active\',this)">Active</div>';
+      document.getElementById('vdSrch').placeholder='Search coaches...';
+    }
+
+    // Update stats
+    document.getElementById('sTLabel').textContent=view==='clients'?'Clients':'Coaches';
+    document.getElementById('sMLabel').textContent=view==='clients'?'Active':'Has Clients';
+    if(view==='clients') vdStats();
+    else vdCoachStats();
+
+    vdRenderList();
+  };
+
+  function vdCoachStats(){
+    document.getElementById('sT').textContent=allK.length;
+    document.getElementById('sM').textContent=allK.filter(function(k){return k.active_match_count>0;}).length;
+    document.getElementById('s1').textContent=allK.filter(function(k){return pNum(k.priority)==='1';}).length;
+    document.getElementById('s2').textContent=allK.filter(function(k){return pNum(k.priority)==='2';}).length;
+    document.getElementById('s3').textContent=allK.filter(function(k){return pNum(k.priority)==='3';}).length;
+    document.getElementById('s1Label').textContent='P1';
+    document.getElementById('s2Label').textContent='P2';
+    document.getElementById('s3Label').textContent='P3';
+  }
+
+  window.vdApplyFilters=function(){
+    filters.status=document.getElementById('fStatus').value;
+    filters.priority=document.getElementById('fPriority').value;
+    filters.category=document.getElementById('fCategory').value;
+    filters.waiver=document.getElementById('fWaiver').value;
+    // Highlight active filters
+    ['fStatus','fPriority','fCategory','fWaiver'].forEach(function(id){
+      var el=document.getElementById(id);
+      el.classList.toggle('active-filter',el.value!=='');
+    });
+    vdRenderList();
+  };
+
+  window.vdClearFilters=function(){
+    filters={status:'',priority:'',category:'',waiver:''};
+    ['fStatus','fPriority','fCategory','fWaiver'].forEach(function(id){
+      var el=document.getElementById(id);
+      el.value='';
+      el.classList.remove('active-filter');
+    });
+    vdRenderList();
+  };
+
+  function getFiltered(){
+    var s=(document.getElementById('vdSrch').value||'').toLowerCase();
+    return allC.filter(function(c){
+      // Tab filter
+      if(curTab==='unmatched' && c.match_id) return false;
+      if(curTab==='hascoach' && !c.match_id) return false;
+
+      // Status dropdown
+      if(filters.status && c.status!==filters.status) return false;
+
+      // Priority dropdown
+      if(filters.priority && pNum(c.priority)!==filters.priority) return false;
+
+      // Category dropdown
+      if(filters.category==='none' && c.assigned_category) return false;
+      if(filters.category && filters.category!=='none' && c.assigned_category!==filters.category) return false;
+
+      // Waiver dropdown
+      if(filters.waiver==='signed' && !c.waiver_signed) return false;
+      if(filters.waiver==='unsigned' && c.waiver_signed) return false;
+
+      // Search
+      if(s){
+        var hay=(c.first_name+' '+c.last_name+' '+(c.email||'')+' '+(c.client_id||'')+' '+(c.branch_of_service||'')+' '+(c.assigned_category||'')).toLowerCase();
+        if(hay.indexOf(s)===-1) return false;
+      }
+
+      return true;
+    });
+  }
+
+  window.vdRenderList=function(){
+    if(curView==='coaches'){ vdRenderCoachList(); return; }
+    var f=getFiltered();
+    var el=document.getElementById('vdList');
+    if(!f.length){el.innerHTML='<div class="vd-empty" style="padding:40px"><div class="vd-empty-ic">🔍</div><h3>No clients</h3></div>';return;}
+    var h='<div class="vd-lh">'+f.length+' of '+allC.length+' clients</div>';
+    f.forEach(function(c){
+      var isSel=c.application_id===selId;
+      var hc=!!c.coach_first_name;
+      var cat=c.assigned_category||'No category';
+      var ci=hc?' · 🔗 '+c.coach_first_name+' '+(c.coach_last_name||'')[0]+'.':'';
+      h+='<div class="vd-li'+(isSel?' sel':'')+'" onclick="vdSel(\''+c.application_id+'\')">'
+        +'<div class="vd-av'+(hc?' mav':'')+'">'+ini(c.first_name,c.last_name)+'</div>'
+        +'<div class="vd-li-i"><div class="vd-li-n">'+c.first_name+' '+c.last_name+'</div>'
+        +'<div class="vd-li-m">'+cat+ci+'</div></div>'
+        +'<div class="vd-li-r"><span class="vd-mn '+pClass(c.priority)+'">'+pLabel(c.priority)+'</span>'
+        +'<span class="vd-ms">'+c.status+'</span></div></div>';
+    });
+    el.innerHTML=h;
+  };
+
+  // ── SELECT CLIENT ──
+  window.vdSel=async function(appId){
+    selId=appId; compareCoachId=null;
+    vdRenderList();
+    var c=allC.find(function(x){return x.application_id===appId;});
+    if(!c) return;
+
+    // Fetch rich data from old clients table
+    var rich=await getClientRich(c.email);
+
+    var panel=document.getElementById('vdDet');
+    panel.innerHTML=buildClientDetail(c,rich,false);
+    panel.scrollTop=0;
+    vdRenderCoaches();
+  };
+
+  function buildClientDetail(c, rich, compact){
+    var r=rich||{};
+    var h='';
+    var cat=c.assigned_category||'Unassigned';
+    var pc=pClass(c.priority);
+    var headshot=c.headshot_url||pick(r,'headshot_url','headshot','photo_url','profile_photo');
+
+    // Hero header with headshot if available
+    h+='<div class="vd-dh">'
+      +(headshot?'<img class="vd-dh-photo" src="'+headshot+'" alt="" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="vd-dh-av" style="display:none">'+ini(c.first_name,c.last_name)+'</div>'
+       :'<div class="vd-dh-av">'+ini(c.first_name,c.last_name)+'</div>')
+      +'<div class="vd-dh-info"><div class="vd-dh-nm">'+c.first_name+' '+c.last_name+'</div>'
+      +'<div class="vd-dh-sub">'+(c.client_id||c.legacy_id||'—')+' · '+(c.email||'No email')+'</div></div>'
+      +'<div class="vd-dh-badges">'
+      +'<span class="vd-dh-badge '+pc+'">'+pLabel(c.priority)+' · '+pDesc(c.priority)+'</span>'
+      +'<span class="vd-dh-badge">'+cat+'</span>'
+      +'<span class="vd-dh-badge">'+(c.status||'Waitlisted')+'</span>'
+      +'</div></div>';
+
+    // Match banner
+    if(c.coach_first_name && !compact){
+      h+='<div class="vd-mbanner"><div class="vd-mbanner-l">'
+        +'<div class="vd-mbanner-av">'+ini(c.coach_first_name,c.coach_last_name)+'</div>'
+        +'<div><h4>Matched: '+c.coach_first_name+' '+c.coach_last_name+'</h4>'
+        +'<p>'+(c.coach_vcp_id||'')+' · '+(c.match_status||'Active')+'</p></div>'
+        +'</div><span class="vd-mbanner-st">'+(c.match_status||'Active')+'</span></div>';
+    }
+
+    // Admin controls bar (non-compact only)
+    if(!compact){
+      h+='<div class="vd-admin-bar">'
+        +'<label>Status</label>'
+        +'<select class="vd-esel" onchange="vdUpd(\''+c.application_id+'\',\'status\',this.value)">'
+        +['Waitlisted','Active','Completed','Dropped','Coach Dropped','Extended','Deferred'].map(function(s){return '<option value="'+s+'" '+(c.status===s?'selected':'')+'>'+s+'</option>';}).join('')+'</select>'
+        +'<div class="vd-admin-sep"></div>'
+        +'<label>Category</label>'
+        +'<select class="vd-esel" onchange="vdUpd(\''+c.application_id+'\',\'assigned_category\',this.value)">'
+        +'<option value="" '+(!c.assigned_category?'selected':'')+'>Unassigned</option>'
+        +['Career Coaching','Life Coaching','Business Coaching','Wellness Coaching','Executive Coaching'].map(function(s){return '<option value="'+s+'" '+(c.assigned_category===s?'selected':'')+'>'+s+'</option>';}).join('')+'</select>'
+        +'<div class="vd-admin-sep"></div>'
+        +'<label>Waiver</label>'
+        +'<button class="vd-wbtn '+(c.waiver_signed?'y':'n')+'" onclick="vdWaiver(\''+c.application_id+'\','+(!c.waiver_signed)+')">'+(c.waiver_signed?'✓ Signed':'✗ Not Signed')+'</button>'
+        +'<div class="vd-admin-sep"></div>'
+        +'<label>Notes</label>'
+        +'<input class="vd-einp" style="flex:1;min-width:120px;" value="'+esc(c.status_notes)+'" placeholder="Add notes..." onblur="vdUpd(\''+c.application_id+'\',\'status_notes\',this.value)">'
+        +'<div class="vd-admin-sep"></div>'
+        +'<button class="vd-del-btn" onclick="vdDelete(\''+c.application_id+'\',\''+esc(c.first_name+' '+c.last_name)+'\')">🗑 Delete</button>'
+        +'</div>';
+    }
+
+    // Action buttons
+    if(!compact){
+      h+='<div class="vd-actions">'
+        +'<button class="vd-action-btn" onclick="vdDownloadPDF(\'client\',\''+c.application_id+'\')">📄 Download PDF</button>'
+        +'<button class="vd-action-btn" onclick="vdViewProfile(\'client\',\''+c.application_id+'\')">👤 View Profile</button>'
+        +'</div>';
+    }
+
+    // ── GLASS CARD GRID ──
+    var bio=pick(r,'bio','brief_bio','short_bio');
+    var goals=c.coaching_goals||pick(r,'accomplishments','goals','coaching_goals','professional_accomplishments');
+
+    // Background container for cards
+    h+='<div class="vd-glass-bg">';
+
+    // Bio + Goals side by side
+    if(bio||goals){
+      h+='<div class="vd-glass-grid'+((!bio||!goals)?' single':'')+'">';
+      if(bio){
+        h+='<div class="vd-glass">'
+          +'<div class="vd-glass-label"><span class="gl-icon">📝</span> Bio</div>'
+          +'<div class="vd-glass-body">'+bio+'</div>'
+          +'</div>';
+      }
+      if(goals){
+        h+='<div class="vd-glass">'
+          +'<div class="vd-glass-label"><span class="gl-icon">🏆</span> Goals & Accomplishments</div>'
+          +'<div class="vd-glass-body">'+goals+'</div>'
+          +'</div>';
+      }
+      h+='</div>';
+    }
+
+    // Passions + Obstacles side by side
+    var passions=pick(r,'passions','hobbies','interests','excited_about','hobbies_interests');
+    var obstacles=pick(r,'obstacles','challenges','anticipated_challenges');
+    if(passions||obstacles){
+      h+='<div class="vd-glass-grid'+((!passions||!obstacles)?' single':'')+'">';
+      if(passions){
+        h+='<div class="vd-glass">'
+          +'<div class="vd-glass-label"><span class="gl-icon">✨</span> Passions & Interests</div>'
+          +'<div class="vd-glass-body">'+passions+'</div>'
+          +'</div>';
+      }
+      if(obstacles){
+        h+='<div class="vd-glass">'
+          +'<div class="vd-glass-label"><span class="gl-icon">⚠️</span> Anticipated Obstacles</div>'
+          +'<div class="vd-glass-body">'+obstacles+'</div>'
+          +'</div>';
+      }
+      h+='</div>';
+    }
+
+    h+='</div>'; // close vd-glass-bg
+
+    // Collapsible: Contact & Military + Coaching Details
+    var collapseId = 'cl_'+c.application_id.substring(0,8);
+    h+='<div class="vd-collapse">'
+      +'<div class="vd-collapse-header" onclick="vdToggle(\''+collapseId+'\')" id="'+collapseId+'_h">'
+      +'<span class="vd-collapse-title">📋 Contact, Military & Coaching Details</span>'
+      +'<span class="vd-collapse-arrow">▼</span>'
+      +'</div>'
+      +'<div class="vd-collapse-body" id="'+collapseId+'_b">'
+      +'<div class="vd-collapse-2col">'
+      +'<div>'
+      +'<div style="font-size:11px;font-weight:700;color:#646C91;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Contact & Military</div>'
+      +rw('Email',c.email)
+      +rw('Phone',c.phone||pick(r,'phone','phone_number'))
+      +rw('Location',(pick(r,'city')||'')+(pick(r,'state')? ', '+pick(r,'state'):'')+(pick(r,'country')? ' · '+pick(r,'country'):''))
+      +rw('Military Status',pick(r,'military_status','current_military_status'))
+      +rw('Branch',c.branch_of_service||pick(r,'branch','branch_of_service','military_branch'))
+      +rw('Service Start',pick(r,'service_start','service_start_date'))
+      +rw('Service End',pick(r,'service_end','service_end_date'))
+      +'</div>'
+      +'<div>'
+      +'<div style="font-size:11px;font-weight:700;color:#646C91;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Coaching Details</div>'
+      +rw('Coaching Types',c.coaching_type_interest||pick(r,'coaching_types','coaching_type','preferred_coaching_type'))
+      +rw('Availability',pick(r,'availability','preferred_meeting_format'))
+      +rw('Previous Cohort',c.is_returning?'Yes ('+c.times_matched+' matches)':'No — first time')
+      +rw('Commitment',pick(r,'commitment','can_commit'))
+      +rw('Referred By',pick(r,'referral','referred_by','referral_source'))
+      +rw('Applied',c.applied_at?new Date(c.applied_at).toLocaleDateString():'—')
+      +'</div>'
+      +'</div>'
+      +'</div>'
+      +'</div>';
+
+    return h;
+  }
+
+  function buildCoachDetail(co, rich){
+    var r=rich||{};
+    var h='';
+    var pc=pClass(co.priority);
+    var specs=co.coaching_specializations&&co.coaching_specializations.length?co.coaching_specializations:[];
+
+    // Hero header
+    h+='<div class="vd-dh" style="background:#455560;">'
+      +'<div class="vd-dh-av coach">'+ini(co.first_name,co.last_name)+'</div>'
+      +'<div class="vd-dh-info"><div class="vd-dh-nm">'+co.first_name+' '+co.last_name+'</div>'
+      +'<div class="vd-dh-sub">'+(co.coach_id||'—')+' · '+(co.email||'No email')+'</div></div>'
+      +'<div class="vd-dh-badges">'
+      +'<span class="vd-dh-badge '+pc+'">'+pLabel(co.priority)+' · '+pDesc(co.priority)+'</span>'
+      +(specs.length?specs.map(function(s){return '<span class="vd-dh-badge">'+s+'</span>';}).join(''):'')
+      +'</div></div>';
+
+    // ── QUALITATIVE INFO FIRST ──
+
+    // Bio
+    var bio=pick(r,'bio','short_bio','brief_bio');
+    if(bio){
+      h+='<div class="vd-bio-section"><div class="vd-bio-label">📝 Bio</div><div class="vd-bio">'+bio+'</div></div>';
+    }
+
+    // Matching notes
+    var notes=pick(r,'matching_notes','coaching_notes','additional_notes');
+    if(notes){
+      h+='<div class="vd-bio-section"><div class="vd-bio-label">📌 Matching Notes</div><div class="vd-bio">'+notes+'</div></div>';
+    }
+
+    // Inspiration + Hobbies side by side
+    var insp=pick(r,'inspiration','what_inspired');
+    var hobbies=pick(r,'hobbies_interests','hobbies','interests','activities');
+    if(insp||hobbies){
+      h+='<div class="vd-2col" style="margin-bottom:16px;">';
+      if(insp){ h+='<div class="vd-bio-section"><div class="vd-bio-label">💡 Inspiration for Applying</div><div class="vd-bio">'+insp+'</div></div>'; }
+      if(hobbies){ h+='<div class="vd-bio-section"><div class="vd-bio-label">✨ Hobbies & Interests</div><div class="vd-bio">'+hobbies+'</div></div>'; }
+      h+='</div>';
+    }
+
+    // ── COLLAPSIBLE SECTIONS ──
+
+    // Contact & Background + Coaching Profile
+    var colId='ck_'+(co.application_id||'').substring(0,8);
+    var coachAreas=pick(r,'coaching_areas','coaching_specializations','coaching_types');
+
+    h+='<div class="vd-collapse">'
+      +'<div class="vd-collapse-header" onclick="vdToggle(\''+colId+'\')" id="'+colId+'_h">'
+      +'<span class="vd-collapse-title">📋 Contact, Background & Coaching Profile</span>'
+      +'<span class="vd-collapse-arrow">▼</span>'
+      +'</div>'
+      +'<div class="vd-collapse-body" id="'+colId+'_b">'
+      +'<div class="vd-collapse-2col">'
+      +'<div>'
+      +'<div style="font-size:11px;font-weight:700;color:#646C91;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Contact & Background</div>'
+      +rw('Email',co.email)
+      +rw('Phone',pick(r,'phone','mobile_phone'))
+      +rw('Location',pick(r,'city_state','city','location')||(pick(r,'state')?pick(r,'state'):'—'))
+      +rw('Education',pick(r,'education_level','education','highest_education'))
+      +rw('Employed',pick(r,'currently_employed','is_employed'))
+      +rw('Professional Background',pick(r,'professional_background','background'))
+      +rw('Affiliation',co.affiliation||pick(r,'professional_affiliation','affiliation'))
+      +rw('LinkedIn',pick(r,'linkedin','linkedin_url','linkedin_profile')? '<a href="'+(pick(r,'linkedin','linkedin_url','linkedin_profile').indexOf('http')===0?pick(r,'linkedin','linkedin_url','linkedin_profile'):'https://'+pick(r,'linkedin','linkedin_url','linkedin_profile'))+'" target="_blank" style="color:#343963;">View Profile</a>':'—')
+      +'</div>'
+      +'<div>'
+      +'<div style="font-size:11px;font-weight:700;color:#646C91;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Coaching Profile</div>'
+      +rw('Specializations',specs.length?specs.map(function(s){return '<span class="vd-tag">'+s+'</span>';}).join(' '):(coachAreas||'—'))
+      +rw('Credentials',pick(r,'coaching_credentials','credentials','certification_source'))
+      +rw('Status',co.status)
+      +rw('Priority','<span class="vd-mn '+pClass(co.priority)+'">'+pLabel(co.priority)+'</span>')
+      +rw('Active Matches',(co.active_match_count||0)+' / '+(co.max_clients||1))
+      +rw('Times Matched',co.times_matched||0)
+      +rw('Returning',co.is_returning?'Yes':'No')
+      +'</div>'
+      +'</div>'
+      +'</div>'
+      +'</div>';
+
+    // Military (collapsible, only if data exists)
+    var isVet=pick(r,'is_veteran','veteran','military_veteran');
+    var milConn=pick(r,'military_connection','military_connections','armed_forces_connection');
+    if(isVet||milConn){
+      var milId='cm_'+(co.application_id||'').substring(0,8);
+      h+='<div class="vd-collapse">'
+        +'<div class="vd-collapse-header" onclick="vdToggle(\''+milId+'\')" id="'+milId+'_h">'
+        +'<span class="vd-collapse-title">🎖️ Military Connection</span>'
+        +'<span class="vd-collapse-arrow">▼</span>'
+        +'</div>'
+        +'<div class="vd-collapse-body" id="'+milId+'_b">'
+        +rw('Veteran',isVet)
+        +rw('Branch',pick(r,'military_branch','branch'))
+        +rw('Connection',milConn)
+        +rw('Rank',pick(r,'highest_rank','rank'))
+        +rw('MOS',pick(r,'military_specialty','mos'))
+        +'</div></div>';
+    }
+
+    // Availability (collapsible)
+    var avail=[];
+    ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'].forEach(function(d){
+      var v=pick(r,'availability_'+d,'avail_'+d,d);
+      if(v && v.toLowerCase().indexOf('not available')===-1) avail.push(d.charAt(0).toUpperCase()+d.slice(1)+': '+v);
+    });
+    if(avail.length){
+      var avId='ca_'+(co.application_id||'').substring(0,8);
+      h+='<div class="vd-collapse">'
+        +'<div class="vd-collapse-header" onclick="vdToggle(\''+avId+'\')" id="'+avId+'_h">'
+        +'<span class="vd-collapse-title">📅 Availability</span>'
+        +'<span class="vd-collapse-arrow">▼</span>'
+        +'</div>'
+        +'<div class="vd-collapse-body" id="'+avId+'_b">';
+      avail.forEach(function(a){ h+='<div style="font-size:13px;padding:4px 0;color:#455560;">'+a+'</div>'; });
+      h+='</div></div>';
+    }
+
+    return h;
+  }
+
+  function rw(l,v){ return '<div class="vd-rw"><span class="vd-rl">'+l+'</span><span class="vd-rv">'+(v==null||v===''||v==='null'?'—':v)+'</span></div>'; }
+
+  // ── COMPARE MODE ──
+  window.vdCompare=async function(coachAppId){
+    compareCoachId=coachAppId;
+    var c=allC.find(function(x){return x.application_id===selId;});
+    var co=allK.find(function(x){return x.application_id===coachAppId;});
+    if(!c||!co) return;
+
+    var panel=document.getElementById('vdDet');
+    panel.innerHTML='<div class="vd-load"><div class="vd-spin"></div>Loading details...</div>';
+
+    var clientRich=await getClientRich(c.email);
+    var coachRich=await getCoachRich(co.email);
+
+    var h='<button class="vd-match-top-btn" onclick="vdDoMatch(\''+coachAppId+'\',\''+esc(co.first_name+' '+co.last_name)+'\')">✓ Match '+c.first_name+' with '+co.first_name+'</button>';
+
+    h+='<div class="vd-compare">';
+
+    // LEFT: Client
+    h+='<div class="vd-compare-col">';
+    h+='<div class="vd-compare-header"><div><h3>Client</h3><span>'+c.first_name+' '+c.last_name+'</span></div></div>';
+    h+=buildClientDetail(c,clientRich,true);
+    h+='</div>';
+
+    // RIGHT: Coach
+    h+='<div class="vd-compare-col">';
+    h+='<div class="vd-compare-header coach-hdr"><div><h3>Coach</h3><span>'+co.first_name+' '+co.last_name+'</span></div>'
+      +'<button class="vd-x-btn" onclick="vdExitCompare()" title="Close comparison">✕</button></div>';
+    h+=buildCoachDetail(co,coachRich);
+    h+='</div>';
+
+    h+='</div>';
+
+    panel.innerHTML=h;
+    panel.scrollTop=0;
+  };
+
+  window.vdExitCompare=function(){
+    compareCoachId=null;
+    vdSel(selId);
+  };
+
+  // ── COACH CARDS ──
+  window.vdRenderCoaches=function(){
+    var srch=document.getElementById('cSrch');
+    var s=srch?srch.value.toLowerCase():'';
+    var c=allC.find(function(x){return x.application_id===selId;});
+    if(!c) return;
+    var grid=document.getElementById('cGrid');
+    if(!grid) return;
+
+    var clientCat=(c.assigned_category||'').toLowerCase().split(' ')[0];
+
+    var coaches=allK.filter(function(co){
+      var ok=['Waitlisted','Active'].indexOf(co.status)>-1;
+      var ms=!s||(co.first_name+' '+co.last_name).toLowerCase().indexOf(s)>-1
+        ||(co.email||'').toLowerCase().indexOf(s)>-1
+        ||(co.coaching_specializations||[]).join(' ').toLowerCase().indexOf(s)>-1;
+      return ok&&ms;
+    });
+
+    coaches=coaches.map(function(co){
+      var score=0;
+      var specs=(co.coaching_specializations||[]).map(function(x){return x.toLowerCase();});
+      var coCat=(co.assigned_category||'').toLowerCase();
+      if(clientCat&&(specs.some(function(x){return x.indexOf(clientCat)>-1;})||coCat.indexOf(clientCat)>-1)) score+=10;
+      if(pNum(co.priority)==='1') score+=3;
+      else if(pNum(co.priority)==='2') score+=2;
+      score-=(co.active_match_count||0)*2;
+      co._score=score;
+      return co;
+    });
+    coaches.sort(function(a,b){return b._score-a._score;});
+
+    if(!coaches.length){grid.innerHTML='<p style="color:#646C91;padding:20px;">No available coaches</p>';return;}
+
+    grid.innerHTML=coaches.slice(0,30).map(function(co){
+      var specs=co.coaching_specializations&&co.coaching_specializations.length?co.coaching_specializations:(co.assigned_category?[co.assigned_category]:[]);
+      var atCap=(co.active_match_count||0)>=(co.max_clients||1);
+      var catM=clientCat&&specs.some(function(x){return x.toLowerCase().indexOf(clientCat)>-1;});
+
+      return '<div class="vd-cc'+(atCap?' dim':'')+'" onclick="vdCompare(\''+co.application_id+'\')">'
+        +'<div class="vd-cc-top"><div class="vd-av cav">'+ini(co.first_name,co.last_name)+'</div>'
+        +'<div><div class="vd-cc-nm">'+co.first_name+' '+co.last_name+'</div>'
+        +'<div class="vd-cc-em">'+(co.email||'—')+'</div></div></div>'
+        +'<div class="vd-cc-tags"><span class="vd-mn '+pClass(co.priority)+'">'+pLabel(co.priority)+'</span>'
+        +(catM?'<span class="vd-cc-tag cm">Category Match</span>':'')
+        +specs.map(function(x){return '<span class="vd-cc-tag">'+x+'</span>';}).join('')
+        +'</div>'
+        +'<div class="vd-cc-rw"><span class="vd-cc-rl">Active Matches</span><span class="vd-cc-rv">'+(co.active_match_count||0)+' / '+(co.max_clients||1)+'</span></div>'
+        +'<div class="vd-cc-rw"><span class="vd-cc-rl">Times Matched</span><span class="vd-cc-rv">'+(co.times_matched||0)+'</span></div>'
+        +(atCap?'<div style="text-align:center;padding:4px;font-size:10px;color:#d97706;font-weight:600;">At capacity</div>':'')
+        +'</div>';
+    }).join('');
+  };
+
+  // ── EDITS ──
+  window.vdUpd=async function(id,fld,val){
+    try{
+      var p={};p[fld]=val||null;
+      if(fld==='status') p.status_date=new Date().toISOString().split('T')[0];
+      await api('client_applications?id=eq.'+id,'PATCH',p);
+      var c=allC.find(function(x){return x.application_id===id;});
+      if(c) c[fld]=val||null;
+      vdStats(); vdRenderList();
+      toast(fld.replace(/_/g,' ')+' updated','ok');
+    }catch(e){toast('Error: '+e.message,'err');}
+  };
+
+  window.vdWaiver=async function(id,val){
+    try{
+      await api('client_applications?id=eq.'+id,'PATCH',{waiver_signed:val,waiver_signed_date:val?new Date().toISOString().split('T')[0]:null});
+      var c=allC.find(function(x){return x.application_id===id;});
+      if(c) c.waiver_signed=val;
+      vdRenderList(); vdSel(id);
+      toast(val?'Waiver signed':'Waiver unmarked','ok');
+    }catch(e){toast('Error','err');}
+  };
+
+  // ── DELETE CLIENT APPLICATION ──
+  window.vdDelete=async function(appId, name){
+    // Step 1: Confirm
+    if(!confirm('Delete '+name+' from this cohort?\n\nThis will remove their application and any match for this cohort. Their data in other cohorts will not be affected.')) return;
+
+    // Step 2: Double confirm for safety
+    if(!confirm('Are you sure? This cannot be undone.')) return;
+
+    try{
+      // Find the client to get person_id and email for cleanup
+      var c=allC.find(function(x){return x.application_id===appId;});
+      if(!c){ toast('Client not found','err'); return; }
+
+      // Step 3: Delete match first (foreign key constraint)
+      await api('new_matches?client_application_id=eq.'+appId,'DELETE');
+
+      // Step 4: Delete the client application
+      await api('client_applications?id=eq.'+appId,'DELETE');
+
+      // Step 5: Check if person has any remaining applications
+      var remainingClient=await api('client_applications?person_id=eq.'+(await getPersonId(c))+'&select=id');
+      var remainingCoach=await api('coach_applications?person_id=eq.'+(await getPersonId(c))+'&select=id');
+
+      // Step 6: If no remaining applications anywhere, delete the person record too
+      if(remainingClient.length===0 && remainingCoach.length===0){
+        var personId=await getPersonId(c);
+        if(personId){
+          await api('people?id=eq.'+personId,'DELETE');
+        }
+        // Also clean up old clients table entry
+        if(c.email){
+          try{ await api('clients?email=eq.'+encodeURIComponent(c.email),'DELETE'); }catch(e){}
+        }
+        toast(name+' fully removed','ok');
+      } else {
+        toast(name+' removed from this cohort','ok');
+      }
+
+      // Step 7: Reload
+      selId=null;
+      await vdLoad();
+      document.getElementById('vdDet').innerHTML='<div class="vd-empty"><div class="vd-empty-ic">✓</div><h3>'+name+' Deleted</h3><p>Select another client from the list</p></div>';
+
+    }catch(e){
+      console.error(e);
+      toast('Error deleting: '+e.message,'err');
+    }
+  };
+
+  // Helper: get person UUID from a client dashboard row
+  async function getPersonId(c){
+    if(c._personId) return c._personId;
+    try{
+      var p;
+      if(c.email) p=await api('people?email=eq.'+encodeURIComponent(c.email)+'&select=id&limit=1');
+      if(!p||!p.length){
+        if(c.legacy_id) p=await api('people?legacy_id=eq.'+c.legacy_id+'&select=id&limit=1');
+      }
+      if(!p||!p.length){
+        if(c.client_id) p=await api('people?vcp_id=eq.'+c.client_id+'&select=id&limit=1');
+      }
+      if(p&&p.length){ c._personId=p[0].id; return p[0].id; }
+    }catch(e){}
+    return null;
+  }
+
+  window.vdDoMatch=async function(coachAppId,coachName){
+    var c=allC.find(function(x){return x.application_id===selId;});
+    if(!c) return;
+    if(!confirm('Match '+c.first_name+' '+c.last_name+' with '+coachName+'?\n\nEmails will be sent to both the client and coach after matching.')) return;
+    try{
+      await api('new_matches','POST',{cohort_id:curCoh,coach_application_id:coachAppId,client_application_id:selId,status:'Active',match_date:new Date().toISOString().split('T')[0]});
+      await api('client_applications?id=eq.'+selId,'PATCH',{status:'Active',status_date:new Date().toISOString().split('T')[0]});
+      await api('coach_applications?id=eq.'+coachAppId,'PATCH',{status:'Active',status_date:new Date().toISOString().split('T')[0]});
+      await vdLoad();
+      vdSel(selId);
+      toast('Matched with '+coachName+'!','ok');
+    }catch(e){toast('Error: '+e.message,'err');}
+  };
+
+  // Inject coach section HTML after client detail renders
+  var _origSel=window.vdSel;
+  window.vdSel=async function(appId){
+    selId=appId; compareCoachId=null;
+    vdRenderList();
+    var c=allC.find(function(x){return x.application_id===appId;});
+    if(!c) return;
+    var panel=document.getElementById('vdDet');
+    panel.innerHTML='<div class="vd-load"><div class="vd-spin"></div>Loading details...</div>';
+
+    var rich=await getClientRich(c.email);
+
+    var h=buildClientDetail(c,rich,false);
+
+    // Coach section
+    h+='<div class="vd-ch"><h3>'+(c.coach_first_name?'Other Available Coaches':'Recommended Coaches')+'</h3>'
+      +'<input type="text" class="vd-csrch" id="cSrch" placeholder="Search coaches..." oninput="vdRenderCoaches()"></div>'
+      +'<div class="vd-cgrid" id="cGrid"></div>';
+
+    // History
+    try{
+      var hist=[];
+      if(c.client_id) hist=await api('v_person_history?vcp_id=eq.'+c.client_id+'&order=year.desc,season.desc');
+      if(!hist.length&&c.legacy_id){
+        var p=await api('people?legacy_id=eq.'+c.legacy_id+'&select=id');
+        if(p.length) hist=await api('v_person_history?person_id=eq.'+p[0].id+'&order=year.desc,season.desc');
+      }
+      if(hist.length>1){
+        h+='<div class="vd-card"><div class="vd-ct">📅 Cohort History ('+hist.length+')</div>';
+        hist.forEach(function(x){
+          var d=x.match_as_client_status==='Completed'?'g':x.client_status==='Dropped'?'b':'w';
+          h+='<div class="vd-hi"><div class="vd-hd '+d+'"></div><div>'
+            +'<div class="vd-hc">'+x.cohort_name+'</div>'
+            +'<div class="vd-hdt">'+(x.client_status||'—')+' · '+(x.assigned_category||'None')+' · '
+            +(x.match_as_client_status?'Match: '+x.match_as_client_status:'Not matched')
+            +'</div></div></div>';
+        });
+        h+='</div>';
+      }
+    }catch(e){}
+
+    panel.innerHTML=h;
+    panel.scrollTop=0;
+    vdRenderCoaches();
+  };
+
+  // ══════════════════════════════════════════
+  // PDF DOWNLOAD & PROFILE VIEW
+  // ══════════════════════════════════════════
+
+  function buildProfileHTML(type, data, rich, opts){
+    opts=opts||{};
+    var r=rich||{};
+    var name=data.first_name+' '+data.last_name;
+    var headshot=data.headshot_url||pick(r,'headshot_url','headshot','photo_url','profile_photo');
+    var isCoach=type==='coach';
+
+    var html='<!DOCTYPE html><html><head><meta charset="UTF-8">'
+      +'<title>'+name+' — VCP Profile</title>'
+      +'<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">'
+      +'<style>'
+      +'*{margin:0;padding:0;box-sizing:border-box;}'
+      +'body{font-family:"DM Sans",sans-serif;color:#343963;background:#fff;}'
+      +'@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}.no-print{display:none !important;}}'
+      +'.header{background:'+(isCoach?'#455560':'#343963')+';color:#fff;padding:40px 48px;display:flex;align-items:center;gap:28px;}'
+      +'.avatar{width:90px;height:90px;border-radius:50%;object-fit:cover;border:4px solid rgba(255,255,255,0.3);}'
+      +'.avatar-ini{width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;color:#fff;flex-shrink:0;}'
+      +'.header-info h1{font-family:"DM Serif Display",serif;font-size:32px;font-weight:400;margin-bottom:4px;}'
+      +'.header-info p{font-size:14px;opacity:0.75;}'
+      +'.badges{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}'
+      +'.badge{padding:5px 14px;border-radius:100px;font-size:12px;font-weight:600;background:rgba(255,255,255,0.15);}'
+      +'.content{padding:40px 48px;max-width:900px;}'
+      +'.card-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;}'
+      +'.card-grid.single{grid-template-columns:1fr;}'
+      +'.card{background:#f8f9fc;border:1px solid #e8eaf0;border-radius:14px;padding:22px 24px;}'
+      +'.card-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#646C91;margin-bottom:12px;display:flex;align-items:center;gap:8px;}'
+      +'.card-icon{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#343963,#646C91);display:flex;align-items:center;justify-content:center;font-size:13px;}'
+      +'.card-body{font-size:14px;line-height:1.8;color:#343963;}'
+      +'.section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#646C91;margin:28px 0 12px;padding-bottom:8px;border-bottom:2px solid #e8eaf0;}'
+      +'.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 40px;}'
+      +'.detail-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f1f5;}'
+      +'.detail-row:last-child{border-bottom:none;}'
+      +'.dl{font-size:13px;color:#646C91;}'
+      +'.dv{font-size:13px;font-weight:600;color:#343963;text-align:right;max-width:60%;}'
+      +'.footer{padding:20px 48px;text-align:center;font-size:11px;color:#999;border-top:1px solid #eee;margin-top:32px;}'
+      +'</style></head><body>';
+
+    // Header
+    html+='<div class="header">';
+    if(headshot) html+='<img class="avatar" src="'+headshot+'" crossorigin="anonymous">';
+    else html+='<div class="avatar-ini">'+((data.first_name||'')[0]||'')+((data.last_name||'')[0]||'')+'</div>';
+    html+='<div class="header-info"><h1>'+name+'</h1>'
+      +'<p>'+(data.email||'—')+' · '+(data.client_id||data.coach_id||data.legacy_id||'—')+'</p>'
+      +'<div class="badges">'
+      +'<span class="badge">'+pLabel(data.priority)+' — '+pDesc(data.priority)+'</span>'
+      +'<span class="badge">'+(data.assigned_category||'Unassigned')+'</span>'
+      +'<span class="badge">'+(data.status||'Waitlisted')+'</span>'
+      +'</div></div></div>';
+
+    html+='<div class="content">';
+
+    if(isCoach){
+      var bio=pick(r,'bio','short_bio','brief_bio');
+      var notes=pick(r,'matching_notes','coaching_notes','additional_notes');
+      var insp=pick(r,'inspiration','what_inspired');
+      var hobbies=pick(r,'hobbies_interests','hobbies','interests','activities');
+
+      if(bio||notes){
+        html+='<div class="card-grid'+((!bio||!notes)?' single':'')+'">';
+        if(bio) html+='<div class="card"><div class="card-label"><span class="card-icon">📝</span> Bio</div><div class="card-body">'+bio+'</div></div>';
+        if(notes) html+='<div class="card"><div class="card-label"><span class="card-icon">📌</span> Matching Notes</div><div class="card-body">'+notes+'</div></div>';
+        html+='</div>';
+      }
+      if(insp||hobbies){
+        html+='<div class="card-grid'+((!insp||!hobbies)?' single':'')+'">';
+        if(insp) html+='<div class="card"><div class="card-label"><span class="card-icon">💡</span> Inspiration</div><div class="card-body">'+insp+'</div></div>';
+        if(hobbies) html+='<div class="card"><div class="card-label"><span class="card-icon">✨</span> Hobbies & Interests</div><div class="card-body">'+hobbies+'</div></div>';
+        html+='</div>';
+      }
+
+      var specs=(data.coaching_specializations||[]).join(', ');
+      html+='<div class="section-title">Coaching Profile</div><div class="detail-grid"><div>'
+        +drw('Specializations',specs||'—')
+        +drw('Category',data.assigned_category||'—')
+        +drw('Affiliation',data.affiliation||pick(r,'affiliation','professional_affiliation')||'—')
+        +drw('Active Matches',(data.active_match_count||0)+' / '+(data.max_clients||1))
+        +'</div><div>'
+        +drw('Status',data.status)
+        +drw('Priority',pLabel(data.priority))
+        +drw('Email',data.email||'—')
+        +drw('Returning',data.is_returning?'Yes':'No')
+        +'</div></div>';
+
+    } else {
+      var bio=pick(r,'bio','brief_bio','short_bio');
+      var goals=data.coaching_goals||pick(r,'accomplishments','goals','coaching_goals');
+      var passions=pick(r,'passions','hobbies','interests','excited_about','hobbies_interests');
+      var obstacles=pick(r,'obstacles','challenges','anticipated_challenges');
+
+      if(bio||goals){
+        html+='<div class="card-grid'+((!bio||!goals)?' single':'')+'">';
+        if(bio) html+='<div class="card"><div class="card-label"><span class="card-icon">📝</span> Bio</div><div class="card-body">'+bio+'</div></div>';
+        if(goals) html+='<div class="card"><div class="card-label"><span class="card-icon">🏆</span> Goals & Accomplishments</div><div class="card-body">'+goals+'</div></div>';
+        html+='</div>';
+      }
+      if(passions||obstacles){
+        html+='<div class="card-grid'+((!passions||!obstacles)?' single':'')+'">';
+        if(passions) html+='<div class="card"><div class="card-label"><span class="card-icon">✨</span> Passions & Interests</div><div class="card-body">'+passions+'</div></div>';
+        if(obstacles) html+='<div class="card"><div class="card-label"><span class="card-icon">⚠️</span> Anticipated Obstacles</div><div class="card-body">'+obstacles+'</div></div>';
+        html+='</div>';
+      }
+
+      html+='<div class="section-title">Contact & Military</div><div class="detail-grid"><div>'
+        +drw('Email',data.email||'—')
+        +drw('Phone',data.phone||pick(r,'phone','phone_number')||'—')
+        +drw('Location',(pick(r,'city')||'')+(pick(r,'state')? ', '+pick(r,'state'):'')+(pick(r,'country')? ' · '+pick(r,'country'):'') || '—')
+        +drw('Military Status',pick(r,'military_status','current_military_status')||'—')
+        +'</div><div>'
+        +drw('Branch',data.branch_of_service||pick(r,'branch','branch_of_service')||'—')
+        +drw('Coaching Types',data.coaching_type_interest||pick(r,'coaching_types')||'—')
+        +drw('Availability',pick(r,'availability')||'—')
+        +drw('Previous Cohort',data.is_returning?'Yes':'No')
+        +'</div></div>';
+    }
+
+    html+='</div>'; // close content
+    html+='<div class="footer">Veterans Coaching Project · '+(new Date().toLocaleDateString())+'</div>';
+    html+='</body></html>';
+    return html;
+  }
+
+  function drw(l,v){
+    return '<div class="detail-row"><span class="dl">'+l+'</span><span class="dv">'+(v||'—')+'</span></div>';
+  }
+
+  window.vdDownloadPDF=async function(type,appId){
+    var data,rich;
+    if(type==='client'){
+      data=allC.find(function(x){return x.application_id===appId;});
+      if(!data){toast('Client not found','err');return;}
+      rich=await getClientRich(data.email);
+    } else {
+      data=allK.find(function(x){return x.application_id===appId;});
+      if(!data){toast('Coach not found','err');return;}
+      rich=await getCoachRich(data.email);
+    }
+
+    var html=buildProfileHTML(type,data,rich);
+    var win=window.open('','_blank','width=900,height=700');
+    win.document.write(html);
+    win.document.close();
+
+    // Add print button
+    var btn=win.document.createElement('div');
+    btn.className='no-print';
+    btn.style.cssText='position:fixed;top:16px;right:16px;z-index:100;display:flex;gap:8px;';
+    btn.innerHTML='<button onclick="window.print()" style="padding:10px 24px;border-radius:8px;border:none;background:#343963;color:#fff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;">🖨 Print / Save as PDF</button>'
+      +'<button onclick="window.close()" style="padding:10px 18px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#666;font-family:inherit;font-size:14px;cursor:pointer;">✕ Close</button>';
+    win.document.body.appendChild(btn);
+
+    toast('Profile opened — use Print to save as PDF','ok');
+  };
+
+  window.vdViewProfile=async function(type,appId){
+    // Same as PDF but without print prompt
+    var data,rich;
+    if(type==='client'){
+      data=allC.find(function(x){return x.application_id===appId;});
+      if(!data){toast('Client not found','err');return;}
+      rich=await getClientRich(data.email);
+    } else {
+      data=allK.find(function(x){return x.application_id===appId;});
+      if(!data){toast('Coach not found','err');return;}
+      rich=await getCoachRich(data.email);
+    }
+
+    var html=buildProfileHTML(type,data,rich);
+    var win=window.open('','_blank','width=900,height=700');
+    win.document.write(html);
+    win.document.close();
+
+    // Just a close button
+    var btn=win.document.createElement('div');
+    btn.className='no-print';
+    btn.style.cssText='position:fixed;top:16px;right:16px;z-index:100;display:flex;gap:8px;';
+    btn.innerHTML='<button onclick="window.print()" style="padding:10px 20px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#343963;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;">🖨 Print</button>'
+      +'<button onclick="window.close()" style="padding:10px 18px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#666;font-family:inherit;font-size:14px;cursor:pointer;">✕ Close</button>';
+    win.document.body.appendChild(btn);
+  };
+
+  // ══════════════════════════════════════════
+  // COACHES VIEW
+  // ══════════════════════════════════════════
+
+  function getFilteredCoaches(){
+    var s=(document.getElementById('vdSrch').value||'').toLowerCase();
+    return allK.filter(function(k){
+      // Tab filters
+      if(curTab==='unmatched' && (k.active_match_count||0)>0) return false;
+      if(curTab==='hasclients' && (k.active_match_count||0)===0) return false;
+      if(curTab==='Waitlisted' && k.status!=='Waitlisted') return false;
+      if(curTab==='Active' && k.status!=='Active') return false;
+
+      // Dropdown filters (reuse same filter IDs)
+      if(filters.status && k.status!==filters.status) return false;
+      if(filters.priority && pNum(k.priority)!==filters.priority) return false;
+      if(filters.category==='none' && k.assigned_category) return false;
+      if(filters.category && filters.category!=='none' && k.assigned_category!==filters.category) return false;
+
+      // Search
+      if(s){
+        var hay=(k.first_name+' '+k.last_name+' '+(k.email||'')+' '+(k.coach_id||'')+' '+(k.assigned_category||'')+' '+(k.coaching_specializations||[]).join(' ')).toLowerCase();
+        if(hay.indexOf(s)===-1) return false;
+      }
+      return true;
+    });
+  }
+
+  function vdRenderCoachList(){
+    var f=getFilteredCoaches();
+    var el=document.getElementById('vdList');
+    if(!f.length){el.innerHTML='<div class="vd-empty" style="padding:40px"><div class="vd-empty-ic">🔍</div><h3>No coaches</h3></div>';return;}
+    var h='<div class="vd-lh">'+f.length+' of '+allK.length+' coaches</div>';
+    f.forEach(function(k){
+      var isSel=k.application_id===selCoachId;
+      var hasClients=(k.active_match_count||0)>0;
+      var specs=k.coaching_specializations&&k.coaching_specializations.length?k.coaching_specializations.join(', '):(k.assigned_category||'No specialization');
+      h+='<div class="vd-li'+(isSel?' sel':'')+'" onclick="vdSelCoach(\''+k.application_id+'\')">'
+        +'<div class="vd-av'+(hasClients?' mav':' cav')+'">'+ini(k.first_name,k.last_name)+'</div>'
+        +'<div class="vd-li-i"><div class="vd-li-n">'+k.first_name+' '+k.last_name+'</div>'
+        +'<div class="vd-li-m">'+specs+(hasClients?' · '+k.active_match_count+' client'+(k.active_match_count>1?'s':''):'')+'</div></div>'
+        +'<div class="vd-li-r"><span class="vd-mn '+pClass(k.priority)+'">'+pLabel(k.priority)+'</span>'
+        +'<span class="vd-ms">'+k.status+'</span></div></div>';
+    });
+    el.innerHTML=h;
+  }
+
+  // ── SELECT COACH ──
+  window.vdSelCoach=async function(appId){
+    selCoachId=appId;
+    vdRenderCoachList();
+    var k=allK.find(function(x){return x.application_id===appId;});
+    if(!k) return;
+
+    var panel=document.getElementById('vdDet');
+    panel.innerHTML='<div class="vd-load"><div class="vd-spin"></div>Loading...</div>';
+
+    // Fetch rich data
+    var rich=await getCoachRich(k.email);
+
+    var h='';
+
+    // Hero header
+    var pc=pClass(k.priority);
+    var specs=k.coaching_specializations&&k.coaching_specializations.length?k.coaching_specializations:[];
+    h+='<div class="vd-dh" style="background:#455560;">'
+      +'<div class="vd-dh-av coach">'+ini(k.first_name,k.last_name)+'</div>'
+      +'<div class="vd-dh-info"><div class="vd-dh-nm">'+k.first_name+' '+k.last_name+'</div>'
+      +'<div class="vd-dh-sub">'+(k.coach_id||k.legacy_id||'—')+' · '+(k.email||'No email')+'</div></div>'
+      +'<div class="vd-dh-badges">'
+      +'<span class="vd-dh-badge '+pc+'">'+pLabel(k.priority)+' · '+pDesc(k.priority)+'</span>'
+      +(specs.length?specs.map(function(s){return '<span class="vd-dh-badge">'+s+'</span>';}).join(''):'')
+      +'<span class="vd-dh-badge">'+(k.status||'Waitlisted')+'</span>'
+      +'</div></div>';
+
+    // Admin controls
+    h+='<div class="vd-admin-bar">'
+      +'<label>Status</label>'
+      +'<select class="vd-esel" onchange="vdUpdCoach(\''+appId+'\',\'status\',this.value)">'
+      +['Waitlisted','Active','Completed','Dropped','Inactive','Extended'].map(function(s){return '<option value="'+s+'" '+(k.status===s?'selected':'')+'>'+s+'</option>';}).join('')+'</select>'
+      +'<div class="vd-admin-sep"></div>'
+      +'<label>Category</label>'
+      +'<select class="vd-esel" onchange="vdUpdCoach(\''+appId+'\',\'assigned_category\',this.value)">'
+      +'<option value="" '+(!k.assigned_category?'selected':'')+'>Unassigned</option>'
+      +['Career Coaching','Life Coaching','Business Coaching','Wellness Coaching','Executive Coaching'].map(function(s){return '<option value="'+s+'" '+(k.assigned_category===s?'selected':'')+'>'+s+'</option>';}).join('')+'</select>'
+      +'<div class="vd-admin-sep"></div>'
+      +'<label>Notes</label>'
+      +'<input class="vd-einp" style="flex:1;min-width:120px;" value="'+esc(k.status_notes)+'" placeholder="Add notes..." onblur="vdUpdCoach(\''+appId+'\',\'status_notes\',this.value)">'
+      +'<div class="vd-admin-sep"></div>'
+      +'<button class="vd-del-btn" onclick="vdDeleteCoach(\''+appId+'\',\''+esc(k.first_name+' '+k.last_name)+'\')">🗑 Delete</button>'
+      +'</div>';
+
+    // Action buttons
+    h+='<div class="vd-actions">'
+      +'<button class="vd-action-btn" onclick="vdDownloadPDF(\'coach\',\''+appId+'\')">📄 Download PDF</button>'
+      +'<button class="vd-action-btn" onclick="vdViewProfile(\'coach\',\''+appId+'\')">👤 View Profile</button>'
+      +'</div>';
+
+    // Matched clients section
+    try{
+      var matches=await api('new_matches?coach_application_id=eq.'+appId+'&select=*,client_application_id(id,person_id,status,assigned_category,coaching_goals)');
+      if(matches.length){
+        h+='<div class="vd-bio-section"><div class="vd-bio-label">🔗 Matched Clients ('+matches.length+')</div>';
+        for(var i=0;i<matches.length;i++){
+          var m=matches[i];
+          // Get client person info
+          var clientApp=m.client_application_id;
+          if(clientApp && clientApp.person_id){
+            var cp=await api('people?id=eq.'+clientApp.person_id+'&select=first_name,last_name,email,branch_of_service&limit=1');
+            if(cp.length){
+              h+='<div class="vd-bio" style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">'
+                +'<div><strong>'+cp[0].first_name+' '+cp[0].last_name+'</strong>'
+                +'<div style="font-size:12px;color:#646C91;">'+( cp[0].email||'—')+' · '+(clientApp.assigned_category||'No category')+' · Match: '+m.status+'</div></div>'
+                +'<span class="vd-badge '+(m.status||'active').toLowerCase().replace(/ /g,'-')+'">'+m.status+'</span>'
+                +'</div>';
+            }
+          }
+        }
+        h+='</div>';
+      }
+    }catch(e){
+      // Fallback: simple match lookup
+      try{
+        var simpleMatches=await api('new_matches?coach_application_id=eq.'+appId);
+        if(simpleMatches.length){
+          h+='<div class="vd-bio-section"><div class="vd-bio-label">🔗 '+simpleMatches.length+' Match'+(simpleMatches.length>1?'es':'')+'</div>';
+          for(var j=0;j<simpleMatches.length;j++){
+            // Look up client from allC
+            var mc=allC.find(function(c){return c.match_id===simpleMatches[j].id;});
+            if(mc){
+              h+='<div class="vd-bio" style="margin-bottom:10px;"><strong>'+mc.first_name+' '+mc.last_name+'</strong>'
+                +' · '+(mc.assigned_category||'No category')+' · '+simpleMatches[j].status+'</div>';
+            } else {
+              h+='<div class="vd-bio" style="margin-bottom:10px;">Match: '+simpleMatches[j].status+'</div>';
+            }
+          }
+          h+='</div>';
+        }
+      }catch(e2){}
+    }
+
+    // Bio + Matching Notes in glass cards
+    var r=rich||{};
+    var bio=pick(r,'bio','short_bio','brief_bio');
+    var notes=pick(r,'matching_notes','coaching_notes','additional_notes');
+
+    h+='<div class="vd-glass-bg">';
+    if(bio||notes){
+      h+='<div class="vd-glass-grid'+((!bio||!notes)?' single':'')+'">';
+      if(bio){
+        h+='<div class="vd-glass">'
+          +'<div class="vd-glass-label"><span class="gl-icon">📝</span> Bio</div>'
+          +'<div class="vd-glass-body">'+bio+'</div>'
+          +'</div>';
+      }
+      if(notes){
+        h+='<div class="vd-glass">'
+          +'<div class="vd-glass-label"><span class="gl-icon">📌</span> Matching Notes</div>'
+          +'<div class="vd-glass-body">'+notes+'</div>'
+          +'</div>';
+      }
+      h+='</div>';
+    }
+
+    // Inspiration + Hobbies in glass cards
+    var insp=pick(r,'inspiration','what_inspired');
+    var hobbies=pick(r,'hobbies_interests','hobbies','interests','activities');
+    if(insp||hobbies){
+      h+='<div class="vd-glass-grid'+((!insp||!hobbies)?' single':'')+'">';
+      if(insp){
+        h+='<div class="vd-glass">'
+          +'<div class="vd-glass-label"><span class="gl-icon">💡</span> Inspiration</div>'
+          +'<div class="vd-glass-body">'+insp+'</div>'
+          +'</div>';
+      }
+      if(hobbies){
+        h+='<div class="vd-glass">'
+          +'<div class="vd-glass-label"><span class="gl-icon">✨</span> Hobbies & Interests</div>'
+          +'<div class="vd-glass-body">'+hobbies+'</div>'
+          +'</div>';
+      }
+      h+='</div>';
+    }
+    h+='</div>'; // close vd-glass-bg
+
+    // Collapsible: Contact & Coaching Profile
+    var colId='ckv_'+(appId||'').substring(0,8);
+    var coachAreas=pick(r,'coaching_areas','coaching_specializations','coaching_types');
+    h+='<div class="vd-collapse">'
+      +'<div class="vd-collapse-header" onclick="vdToggle(\''+colId+'\')" id="'+colId+'_h">'
+      +'<span class="vd-collapse-title">📋 Contact, Background & Coaching Profile</span>'
+      +'<span class="vd-collapse-arrow">▼</span>'
+      +'</div>'
+      +'<div class="vd-collapse-body" id="'+colId+'_b">'
+      +'<div class="vd-collapse-2col">'
+      +'<div>'
+      +'<div style="font-size:11px;font-weight:700;color:#646C91;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Contact & Background</div>'
+      +rw('Email',k.email)
+      +rw('Phone',pick(r,'phone','mobile_phone'))
+      +rw('Location',pick(r,'city_state','city','location')||(pick(r,'state')?pick(r,'state'):'—'))
+      +rw('Education',pick(r,'education_level','education','highest_education'))
+      +rw('Professional Background',pick(r,'professional_background','background'))
+      +rw('Affiliation',k.affiliation||pick(r,'professional_affiliation','affiliation'))
+      +rw('LinkedIn',pick(r,'linkedin','linkedin_url','linkedin_profile')? '<a href="'+(pick(r,'linkedin','linkedin_url','linkedin_profile').indexOf('http')===0?pick(r,'linkedin','linkedin_url','linkedin_profile'):'https://'+pick(r,'linkedin','linkedin_url','linkedin_profile'))+'" target="_blank" style="color:#343963;">View Profile</a>':'—')
+      +'</div>'
+      +'<div>'
+      +'<div style="font-size:11px;font-weight:700;color:#646C91;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Coaching Profile</div>'
+      +rw('Specializations',specs.length?specs.map(function(s){return '<span class="vd-tag">'+s+'</span>';}).join(' '):(coachAreas||'—'))
+      +rw('Credentials',pick(r,'coaching_credentials','credentials','certification_source'))
+      +rw('Priority','<span class="vd-mn '+pClass(k.priority)+'">'+pLabel(k.priority)+'</span>')
+      +rw('Active Matches',(k.active_match_count||0)+' / '+(k.max_clients||1))
+      +rw('Times Matched',k.times_matched||0)
+      +rw('Returning',k.is_returning?'Yes':'No')
+      +'</div>'
+      +'</div></div></div>';
+
+    // Collapsible: Military
+    var isVet=pick(r,'is_veteran','veteran','military_veteran');
+    var milConn=pick(r,'military_connection','military_connections','armed_forces_connection');
+    if(isVet||milConn){
+      var milId='cmv_'+(appId||'').substring(0,8);
+      h+='<div class="vd-collapse">'
+        +'<div class="vd-collapse-header" onclick="vdToggle(\''+milId+'\')" id="'+milId+'_h">'
+        +'<span class="vd-collapse-title">🎖️ Military Connection</span>'
+        +'<span class="vd-collapse-arrow">▼</span>'
+        +'</div>'
+        +'<div class="vd-collapse-body" id="'+milId+'_b">'
+        +rw('Veteran',isVet)
+        +rw('Branch',pick(r,'military_branch','branch'))
+        +rw('Connection',milConn)
+        +'</div></div>';
+    }
+
+    // Collapsible: Availability
+    var avail=[];
+    ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'].forEach(function(d){
+      var v=pick(r,'availability_'+d,'avail_'+d,d);
+      if(v && v.toLowerCase().indexOf('not available')===-1) avail.push(d.charAt(0).toUpperCase()+d.slice(1)+': '+v);
+    });
+    if(avail.length){
+      var avId='cav_'+(appId||'').substring(0,8);
+      h+='<div class="vd-collapse">'
+        +'<div class="vd-collapse-header" onclick="vdToggle(\''+avId+'\')" id="'+avId+'_h">'
+        +'<span class="vd-collapse-title">📅 Availability</span>'
+        +'<span class="vd-collapse-arrow">▼</span>'
+        +'</div>'
+        +'<div class="vd-collapse-body" id="'+avId+'_b">';
+      avail.forEach(function(a){ h+='<div style="font-size:13px;padding:4px 0;color:#455560;">'+a+'</div>'; });
+      h+='</div></div>';
+    }
+
+    panel.innerHTML=h;
+    panel.scrollTop=0;
+  };
+
+  // ── COACH EDITS ──
+  window.vdUpdCoach=async function(id,fld,val){
+    try{
+      var p={};p[fld]=val||null;
+      if(fld==='status') p.status_date=new Date().toISOString().split('T')[0];
+      await api('coach_applications?id=eq.'+id,'PATCH',p);
+      var k=allK.find(function(x){return x.application_id===id;});
+      if(k) k[fld]=val||null;
+      vdCoachStats();
+      vdRenderCoachList();
+      toast(fld.replace(/_/g,' ')+' updated','ok');
+    }catch(e){toast('Error: '+e.message,'err');}
+  };
+
+  window.vdDeleteCoach=async function(appId,name){
+    if(!confirm('Delete '+name+' from this cohort?\\n\\nThis will remove their application and any matches for this cohort.')) return;
+    if(!confirm('Are you sure? This cannot be undone.')) return;
+    try{
+      // Delete matches where this coach is involved
+      await api('new_matches?coach_application_id=eq.'+appId,'DELETE');
+      // Delete coach application
+      await api('coach_applications?id=eq.'+appId,'DELETE');
+
+      // Check if person has remaining applications
+      var k=allK.find(function(x){return x.application_id===appId;});
+      if(k&&k.email){
+        var person=await api('people?email=eq.'+encodeURIComponent(k.email)+'&select=id&limit=1');
+        if(person.length){
+          var remClient=await api('client_applications?person_id=eq.'+person[0].id+'&select=id');
+          var remCoach=await api('coach_applications?person_id=eq.'+person[0].id+'&select=id');
+          if(remClient.length===0 && remCoach.length===0){
+            await api('people?id=eq.'+person[0].id,'DELETE');
+            try{await api('coaches?email=eq.'+encodeURIComponent(k.email),'DELETE');}catch(e){}
+            toast(name+' fully removed','ok');
+          } else {
+            toast(name+' removed from this cohort','ok');
+          }
+        }
+      } else {
+        toast(name+' removed','ok');
+      }
+
+      selCoachId=null;
+      await vdLoad();
+      vdSwitchView('coaches');
+    }catch(e){console.error(e);toast('Error: '+e.message,'err');}
+  };
+
+  // ══════════════════════════════════════════
+  // COHORT MANAGEMENT VIEW
+  // ══════════════════════════════════════════
+
+  function vdRenderCohortList(){
+    var el=document.getElementById('vdList');
+    if(!el) return;
+    var h='<div class="vd-lh">'+cohorts.length+' cohorts</div>';
+    cohorts.forEach(function(c){
+      var statusColor=c.status==='Active'?'#16a34a':c.status==='Planning'?'#d97706':'#646C91';
+      h+='<div class="vd-li'+(c.id===selCohortId?' sel':'')+'" onclick="vdSelCohort(\''+c.id+'\')">'
+        +'<div class="vd-av" style="background:'+statusColor+';font-size:11px;">'+c.season.substring(0,2).toUpperCase()+'</div>'
+        +'<div class="vd-li-i"><div class="vd-li-n">'+c.cohort_name+'</div>'
+        +'<div class="vd-li-m">'+(c.cohort_label||'No label')+'</div></div>'
+        +'<div class="vd-li-r"><span class="vd-ms" style="color:'+statusColor+'">'+c.status+'</span></div></div>';
+    });
+    el.innerHTML=h;
+  }
+
+  var selCohortId=null;
+
+  // ── FORM HELPERS ──
+  function cohSection(icon,title,content){
+    return '<div class="vd-glass-bg"><div class="vd-glass" style="margin-bottom:0;">'
+      +'<div class="vd-glass-label"><span class="gl-icon">'+icon+'</span> '+title+'</div>'
+      +content+'</div></div>';
+  }
+
+  function cohLabel(text){
+    return '<label style="display:block;font-size:12px;font-weight:600;color:#646C91;margin-bottom:4px;">'+text+'</label>';
+  }
+
+  function cohInput(field,value,placeholder){
+    return '<input type="text" style="width:100%;padding:10px 14px;border:1px solid #e4e6ef;border-radius:8px;font-family:inherit;font-size:14px;color:#343963;outline:none;" '
+      +'value="'+esc(value)+'" placeholder="'+(placeholder||'')+'" '
+      +'onblur="vdUpdCohort(\''+field+'\',this.value)">';
+  }
+
+  function cohDatePicker(field,value){
+    return '<input type="date" style="padding:10px 14px;border:1px solid #e4e6ef;border-radius:8px;font-family:inherit;font-size:14px;color:#343963;outline:none;width:100%;" '
+      +'value="'+esc(value)+'" onchange="vdUpdCohort(\''+field+'\',this.value)">';
+  }
+
+  function cohTimePicker(field,value){
+    // Parse existing value like "6:00 pm EST" into parts
+    var hr='',min='00',ampm='PM',tz='EST';
+    if(value){
+      var m=value.match(/(\d{1,2}):(\d{2})\s*(am|pm|AM|PM)\s*(.*)/);
+      if(m){ hr=m[1]; min=m[2]; ampm=m[3].toUpperCase(); tz=m[4]||'EST'; }
+    }
+    var hrOpts='<option value="">—</option>';
+    for(var i=1;i<=12;i++) hrOpts+='<option value="'+i+'" '+(hr==String(i)?'selected':'')+'>'+i+'</option>';
+    var minOpts='<option value="00" '+(min==='00'?'selected':'')+'>00</option><option value="15" '+(min==='15'?'selected':'')+'>15</option><option value="30" '+(min==='30'?'selected':'')+'>30</option><option value="45" '+(min==='45'?'selected':'')+'>45</option>';
+    var amOpts='<option value="AM" '+(ampm==='AM'?'selected':'')+'>AM</option><option value="PM" '+(ampm==='PM'?'selected':'')+'>PM</option>';
+    var tzOpts='<option value="EST" '+(tz==='EST'?'selected':'')+'>EST</option><option value="CST" '+(tz==='CST'?'selected':'')+'>CST</option><option value="MST" '+(tz==='MST'?'selected':'')+'>MST</option><option value="PST" '+(tz==='PST'?'selected':'')+'>PST</option>';
+
+    return '<div style="display:flex;gap:6px;align-items:center;" id="tp_'+field+'">'
+      +'<select style="padding:8px 10px;border:1px solid #e4e6ef;border-radius:8px;font-family:inherit;font-size:14px;color:#343963;" onchange="vdSaveTime(\''+field+'\')">'+hrOpts+'</select>'
+      +'<span style="font-weight:700;color:#646C91;">:</span>'
+      +'<select style="padding:8px 10px;border:1px solid #e4e6ef;border-radius:8px;font-family:inherit;font-size:14px;color:#343963;" onchange="vdSaveTime(\''+field+'\')">'+minOpts+'</select>'
+      +'<select style="padding:8px 10px;border:1px solid #e4e6ef;border-radius:8px;font-family:inherit;font-size:14px;color:#343963;" onchange="vdSaveTime(\''+field+'\')">'+amOpts+'</select>'
+      +'<select style="padding:8px 10px;border:1px solid #e4e6ef;border-radius:8px;font-family:inherit;font-size:14px;color:#343963;" onchange="vdSaveTime(\''+field+'\')">'+tzOpts+'</select>'
+      +'</div>';
+  }
+
+  window.vdSaveTime=function(field){
+    var el=document.getElementById('tp_'+field);
+    if(!el) return;
+    var sels=el.querySelectorAll('select');
+    var hr=sels[0].value, min=sels[1].value, ampm=sels[2].value, tz=sels[3].value;
+    if(!hr){vdUpdCohort(field,null);return;}
+    vdUpdCohort(field, hr+':'+min+' '+ampm.toLowerCase()+' '+tz);
+  };
+
+  function cohCohortDropdown(field,value){
+    // Parse number from "Cohort 14.0"
+    var num='';
+    if(value){ var m=value.match(/([\d.]+)/); if(m) num=m[1]; }
+    var opts='<option value="">Select...</option>';
+    for(var i=1;i<=50;i++){
+      var v=i+'.0';
+      opts+='<option value="'+v+'" '+(num===v?'selected':'')+'>'+v+'</option>';
+    }
+    return '<select style="width:100%;padding:10px 14px;border:1px solid #e4e6ef;border-radius:8px;font-family:inherit;font-size:14px;color:#343963;outline:none;cursor:pointer;" '
+      +'onchange="vdUpdCohort(\''+field+'\',this.value?\'Cohort \'+this.value:null)">'
+      +opts+'</select>';
+  }
+
+  function cohSelect(field,value,options){
+    var opts=options.map(function(o){return '<option value="'+o+'" '+(value===o?'selected':'')+'>'+o+'</option>';}).join('');
+    return '<select style="width:100%;padding:10px 14px;border:1px solid #e4e6ef;border-radius:8px;font-family:inherit;font-size:14px;color:#343963;outline:none;cursor:pointer;" '
+      +'onchange="vdUpdCohort(\''+field+'\',this.value)">'
+      +opts+'</select>';
+  }
+
+  // ── DYNAMIC SESSION BUILDER ──
+  function cohSessions(field,value,sessionLabel){
+    var sessions=[];
+    if(value){
+      value.split('\n').forEach(function(line){
+        line=line.trim();
+        if(!line) return;
+        sessions.push(line);
+      });
+    }
+    var h='<div id="sess_'+field+'" class="vd-sess-container">';
+    sessions.forEach(function(s,i){
+      h+=buildSessionRow(field,i,s);
+    });
+    h+='<button type="button" class="vd-add-sess-btn" data-add-btn="'+field+'" '
+      +'onclick="vdAddSession(\''+field+'\')">+ Add Session</button>'
+      +'</div>';
+    return h;
+  }
+
+  function buildSessionRow(field,index,value){
+    var dateVal='', timeStr='', zoomUrl='';
+    if(value){
+      // Parse "Saturday, 02/14/2026 - 11:00 a.m. EST | https://zoom..."
+      var zoomSplit=value.split(' | ');
+      if(zoomSplit.length>=2) zoomUrl=zoomSplit[1].trim();
+      var mainPart=zoomSplit[0];
+      var parts=mainPart.split(' - ');
+      if(parts.length>=2) timeStr=parts[1].trim();
+      var dm=mainPart.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+      if(dm) dateVal=dm[3]+'-'+dm[1].padStart(2,'0')+'-'+dm[2].padStart(2,'0');
+    }
+
+    return '<div class="vd-sess-row" data-sess-idx="'+index+'">'
+      +'<div class="vd-sess-header">'
+      +'<span class="vd-sess-num">#'+(index+1)+'</span>'
+      +'<button type="button" class="vd-sess-del" onclick="this.closest(\'.vd-sess-row\').remove();vdSaveAllSessions(\''+field+'\')">✕</button>'
+      +'</div>'
+      +'<div class="vd-sess-fields">'
+      +'<div><label class="vd-sess-lbl">Date</label>'
+      +'<input type="date" class="vd-sess-input" value="'+dateVal+'" onchange="vdSaveAllSessions(\''+field+'\')"></div>'
+      +'<div><label class="vd-sess-lbl">Time</label>'
+      +'<input type="text" class="vd-sess-input" value="'+esc(timeStr)+'" placeholder="11:00 a.m. EST" onblur="vdSaveAllSessions(\''+field+'\')"></div>'
+      +'</div>'
+      +'<div style="margin-top:6px;"><label class="vd-sess-lbl">Zoom Link</label>'
+      +'<input type="text" class="vd-sess-input vd-sess-full" value="'+esc(zoomUrl)+'" placeholder="https://zoom.us/j/..." onblur="vdSaveAllSessions(\''+field+'\')"></div>'
+      +'</div>';
+  }
+
+  window.vdAddSession=function(field){
+    var container=document.getElementById('sess_'+field);
+    if(!container) return;
+    var rows=container.querySelectorAll('[data-sess-idx]');
+    var idx=rows.length;
+    var addBtn=container.querySelector('[data-add-btn="'+field+'"]');
+    var tmp=document.createElement('div');
+    tmp.innerHTML=buildSessionRow(field,idx,'');
+    if(addBtn) container.insertBefore(tmp.firstChild,addBtn);
+    else container.appendChild(tmp.firstChild);
+  };
+
+  window.vdSaveAllSessions=function(field){
+    var container=document.getElementById('sess_'+field);
+    if(!container) return;
+    var rows=container.querySelectorAll('[data-sess-idx]');
+    var lines=[];
+    rows.forEach(function(row,i){
+      var dateInput=row.querySelector('input[type="date"]');
+      var inputs=row.querySelectorAll('input[type="text"]');
+      var timeInput=inputs[0]||null;
+      var zoomInput=inputs[1]||null;
+      var d=dateInput?dateInput.value:'';
+      var t=timeInput?timeInput.value:'';
+      var z=zoomInput?zoomInput.value:'';
+      if(d){
+        var dt=new Date(d+'T12:00:00');
+        var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        var formatted=days[dt.getDay()]+', '+(dt.getMonth()+1).toString().padStart(2,'0')+'/'+dt.getDate().toString().padStart(2,'0')+'/'+dt.getFullYear();
+        if(t) formatted+=' - '+t;
+        if(z) formatted+=' | '+z;
+        lines.push(formatted);
+      }
+      // Update the row number
+      var num=row.querySelector('.vd-sess-num');
+      if(num) num.textContent='#'+(i+1);
+    });
+    vdUpdCohort(field, lines.length?lines.join('\n'):null);
+  };
+
+  // ── SELECT COHORT ──
+  window.vdSelCohort=async function(cohortId){
+    selCohortId=cohortId;
+    vdRenderCohortList();
+
+    var cArr=await api('cohorts?id=eq.'+cohortId);
+    if(!cArr.length) return;
+    var c=cArr[0];
+
+    var panel=document.getElementById('vdDet');
+    var statusColor=c.status==='Active'?'#16a34a':c.status==='Planning'?'#d97706':'#646C91';
+
+    var h='';
+    // Header
+    h+='<div class="vd-dh" style="background:#343963;">'
+      +'<div class="vd-dh-av" style="font-size:16px;">'+c.season.substring(0,2).toUpperCase()+'</div>'
+      +'<div class="vd-dh-info"><div class="vd-dh-nm">'+c.cohort_name+'</div>'
+      +'<div class="vd-dh-sub">'+(c.cohort_label||'No label set')+'</div></div>'
+      +'<div class="vd-dh-badges">'
+      +'<span class="vd-dh-badge" style="background:'+statusColor+';">'+c.status+'</span>'
+      +'</div></div>';
+
+    h+='<div style="padding:4px 0;">';
+
+    // ── BASIC INFO ──
+    h+=cohSection('📋','Basic Info',
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">'
+      +'<div>'+cohLabel('Cohort Number')+cohCohortDropdown('cohort_label',c.cohort_label)+'</div>'
+      +'<div>'+cohLabel('Status')+cohSelect('status',c.status,['Planning','Active','Completed','Archived'])+'</div>'
+      +'</div>'
+    );
+
+    // ── KICKOFF MEETING ──
+    h+=cohSection('🚀','Kickoff Meeting',
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">'
+      +'<div>'+cohLabel('Date')+cohDatePicker('kickoff_date',c.kickoff_date)+'</div>'
+      +'<div>'+cohLabel('Time')+cohTimePicker('kickoff_time',c.kickoff_time)+'</div>'
+      +'</div>'
+      +'<div style="margin-bottom:14px;">'+cohLabel('Zoom Meeting URL')+cohInput('kickoff_zoom_url',c.kickoff_zoom_url,'https://zoom.us/j/...')+'</div>'
+      +'<div>'+cohLabel('Replay URL (after meeting)')+cohInput('kickoff_replay_url',c.kickoff_replay_url,'Google Drive link')+'</div>'
+    );
+
+    // ── INTRO MEETINGS (side by side) ──
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">';
+
+    // Client Intro
+    h+=cohSection('👤','Client Intro',
+      cohLabel('Date')+cohDatePicker('client_intro_date',c.client_intro_date)
+      +'<div style="margin-top:8px;">'+cohLabel('Time')+cohTimePicker('client_intro_time',c.client_intro_time)+'</div>'
+      +'<div style="margin-top:8px;">'+cohLabel('Meeting URL')+cohInput('client_intro_url',c.client_intro_url,'Zoom link')+'</div>'
+      +'<div style="margin-top:8px;">'+cohLabel('Replay URL')+cohInput('client_intro_replay_url',c.client_intro_replay_url,'Drive link')+'</div>'
+    );
+
+    // Coach Intro
+    h+=cohSection('🎓','Coach Intro',
+      cohLabel('Date')+cohDatePicker('coach_intro_date',c.coach_intro_date)
+      +'<div style="margin-top:8px;">'+cohLabel('Time')+cohTimePicker('coach_intro_time',c.coach_intro_time)+'</div>'
+      +'<div style="margin-top:8px;">'+cohLabel('Meeting URL')+cohInput('coach_intro_url',c.coach_intro_url,'Zoom link')+'</div>'
+      +'<div style="margin-top:8px;">'+cohLabel('Replay URL')+cohInput('coach_intro_replay_url',c.coach_intro_replay_url,'Drive link')+'</div>'
+    );
+
+    h+='</div>';
+
+    // ── SESSION BUILDERS (2-col for forum + supervision, full-width for group) ──
+
+    // Group Coaching (clients - full width)
+    h+=cohSection('👥','Group Coaching Sessions (Clients)',
+      '<p style="font-size:12px;color:#646C91;margin-bottom:10px;">Veterans attend at least 2 sessions. 1 hour each.</p>'
+      +cohSessions('group_coaching_dates',c.group_coaching_dates,'Group Coaching')
+    );
+
+    // Forum + Supervision side by side
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">';
+
+    h+=cohSection('💬','Coaching Forum (Coaches)',
+      '<p style="font-size:12px;color:#646C91;margin-bottom:10px;">Attend at least 1 session. 1 hour.</p>'
+      +cohSessions('coaching_forum_dates',c.coaching_forum_dates,'Forum')
+    );
+
+    h+=cohSection('📊','Supervision (Coaches)',
+      '<p style="font-size:12px;color:#646C91;margin-bottom:10px;">Attend at least 1 session. 1 hour.</p>'
+      +cohSessions('coaching_supervision_dates',c.coaching_supervision_dates,'Supervision')
+    );
+
+    h+='</div>';
+
+    // ── NOTES ──
+    h+=cohSection('📝','Additional Email Notes',
+      '<textarea style="width:100%;padding:10px 14px;border:1px solid #e4e6ef;border-radius:8px;font-family:inherit;font-size:14px;color:#343963;outline:none;min-height:80px;resize:vertical;line-height:1.7;" '
+      +'placeholder="Any extra info to include in match emails" '
+      +'onblur="vdUpdCohort(\'email_notes\',this.value)">'+(c.email_notes||'')+'</textarea>'
+    );
+
+    // Delete
+    h+='<div style="text-align:center;padding:16px 0;">'
+      +'<button class="vd-del-btn" style="padding:10px 24px;font-size:13px;" onclick="vdDeleteCohort(\''+c.id+'\',\''+esc(c.cohort_name)+'\')">🗑 Delete Cohort</button>'
+      +'</div>';
+
+    h+='</div>';
+    panel.innerHTML=h;
+    panel.scrollTop=0;
+  };
+
+  window.vdUpdCohort=async function(field,value){
+    if(!selCohortId) return;
+    try{
+      var p={};p[field]=value||null;
+      await api('cohorts?id=eq.'+selCohortId,'PATCH',p);
+      var c=cohorts.find(function(x){return x.id===selCohortId;});
+      if(c) c[field]=value||null;
+      if(field==='status' && value==='Active'){
+        for(var i=0;i<cohorts.length;i++){
+          if(cohorts[i].id!==selCohortId && cohorts[i].status==='Active'){
+            await api('cohorts?id=eq.'+cohorts[i].id,'PATCH',{status:'Completed'});
+            cohorts[i].status='Completed';
+          }
+        }
+      }
+      vdRenderCohortList();
+      toast(field.replace(/_/g,' ')+' updated','ok');
+    }catch(e){toast('Error: '+e.message,'err');}
+  };
+
+  window.vdDeleteCohort=async function(cohortId,name){
+    if(!confirm('Delete cohort "'+name+'"?\n\nThis will remove all applications and matches in this cohort.')) return;
+    if(!confirm('Are you absolutely sure? This cannot be undone.')) return;
+    try{
+      await api('new_matches?cohort_id=eq.'+cohortId,'DELETE');
+      await api('client_applications?cohort_id=eq.'+cohortId,'DELETE');
+      await api('coach_applications?cohort_id=eq.'+cohortId,'DELETE');
+      await api('cohorts?id=eq.'+cohortId,'DELETE');
+      cohorts=await api('cohorts?order=year.desc,season.desc');
+      selCohortId=null;
+      vdRenderCohortList();
+      document.getElementById('vdDet').innerHTML='<div class="vd-empty"><div class="vd-empty-ic">✓</div><h3>'+name+' Deleted</h3></div>';
+      toast(name+' deleted','ok');
+    }catch(e){toast('Error: '+e.message,'err');}
+  };
+
+  // ── NEW COHORT ──
+  window.vdShowNewCohort=function(){
+    // Pre-fill with next logical cohort
+    var seasons=['Spring','Summer','Fall','Winter'];
+    if(cohorts.length){
+      var latest=cohorts[0]; // sorted desc
+      var si=seasons.indexOf(latest.season);
+      var nextSeason=seasons[(si+1)%seasons.length];
+      var nextYear=(si+1>=seasons.length)?latest.year+1:latest.year;
+      // If next season already exists, bump further
+      var exists=cohorts.find(function(c){return c.season===nextSeason&&c.year===nextYear;});
+      if(exists){
+        nextSeason=seasons[(si+2)%seasons.length];
+        nextYear=(si+2>=seasons.length)?latest.year+1:latest.year;
+      }
+      document.getElementById('ncSeason').value=nextSeason;
+      document.getElementById('ncYear').value=nextYear;
+    }
+    document.getElementById('vdNewCohModal').style.display='flex';
+  };
+
+  window.vdCloseNewCohort=function(){
+    document.getElementById('vdNewCohModal').style.display='none';
+  };
+
+  window.vdCreateCohort=async function(){
+    var season=document.getElementById('ncSeason').value;
+    var year=parseInt(document.getElementById('ncYear').value);
+    var status=document.getElementById('ncStatus').value;
+    var name=season+' '+year;
+
+    // Generate cohort_numeric: year * 10 + season index
+    var seasonIdx={Spring:1,Summer:2,Fall:3,Winter:4};
+    var numeric=year*10+seasonIdx[season];
+
+    // Check if it already exists
+    if(cohorts.find(function(c){return c.cohort_name===name;})){
+      toast(name+' already exists','err');
+      return;
+    }
+
+    // If setting to Active, demote current active cohort to Completed
+    if(status==='Active'){
+      var currentActive=cohorts.find(function(c){return c.status==='Active';});
+      if(currentActive){
+        await api('cohorts?id=eq.'+currentActive.id,'PATCH',{status:'Completed'});
+      }
+    }
+
+    try{
+      await api('cohorts','POST',{
+        cohort_name:name,
+        season:season,
+        year:year,
+        cohort_numeric:numeric,
+        status:status
+      });
+
+      toast(name+' created! Rollover triggered.','ok');
+      vdCloseNewCohort();
+
+      // Reload cohorts and data
+      cohorts=await api('cohorts?order=year.desc,season.desc');
+      var sel=document.getElementById('cohSel');
+      sel.innerHTML=cohorts.map(function(c){
+        return '<option value="'+c.id+'" '+(c.cohort_name===name?'selected':'')+'>'+c.cohort_name+(c.status==='Active'?' ●':'')+'</option>';
+      }).join('');
+      sel.value=cohorts.find(function(c){return c.cohort_name===name;}).id;
+      await vdLoad();
+    }catch(e){
+      console.error(e);
+      toast('Error creating cohort: '+e.message,'err');
+    }
+  };
+
+  init();
+})();
+</script>
