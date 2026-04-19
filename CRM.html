@@ -672,6 +672,70 @@
       font-style: italic;
     }
 
+    /* PIPELINE DOTS (table column) */
+    .pipeline-dots {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .pipeline-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--border);
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+
+    .pipeline-dot.done { background: var(--success); }
+
+    /* PIPELINE STEPS (side panel) */
+    .pipeline-steps { display: flex; flex-direction: column; gap: 8px; }
+
+    .pipeline-step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: var(--bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      transition: background 0.15s, border-color 0.15s;
+      cursor: pointer;
+    }
+
+    .pipeline-step:hover { background: #eef0f8; border-color: var(--navy-light); }
+
+    .pipeline-step.done { border-color: #a7f3d0; background: #f0fdf4; }
+    .pipeline-step.done .pipeline-step-label { color: #065f46; font-weight: 600; }
+
+    .pipeline-step input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+      flex-shrink: 0;
+      cursor: pointer;
+      accent-color: var(--navy);
+      pointer-events: none;
+    }
+
+    .pipeline-step-info { flex: 1; min-width: 0; }
+
+    .pipeline-step-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .pipeline-step-date {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .pipeline-step.saving { opacity: 0.55; pointer-events: none; }
+
     .assign-section {
       background: #f8f9fb;
       border-radius: var(--radius);
@@ -1082,12 +1146,13 @@
               <th class="sortable" data-col="cohort" onclick="sortBy('cohort')">
                 Cohort <span class="sort-icon">↕</span>
               </th>
+              <th title="LinkedIn · Email 1 · Email 2 · Phone · Text">Pipeline</th>
               <th>Assigned To</th>
             </tr>
           </thead>
           <tbody id="leads-tbody">
             <tr class="loading-row">
-              <td colspan="7"><span class="spinner"></span> Loading leads…</td>
+              <td colspan="8"><span class="spinner"></span> Loading leads…</td>
             </tr>
           </tbody>
         </table>
@@ -1354,7 +1419,7 @@
       state.loading = true;
 
       document.getElementById('leads-tbody').innerHTML =
-        '<tr class="loading-row"><td colspan="7"><span class="spinner"></span> Loading…</td></tr>';
+        '<tr class="loading-row"><td colspan="8"><span class="spinner"></span> Loading…</td></tr>';
       document.getElementById('table-count').textContent = 'Loading…';
       document.getElementById('pagination').style.display = 'none';
 
@@ -1402,7 +1467,7 @@
       if (state.leads.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="7">
+            <td colspan="8">
               <div class="table-empty">
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                 <h3>No leads found</h3>
@@ -1428,6 +1493,13 @@
           ? '<span class="badge badge-active" title="Has submitted an application">Applied</span>'
           : '<span class="badge badge-noapplication" title="No application found">No App</span>';
 
+        const pipelineDots = ['li_date','email1_date','email2_date','phone_date','text_date']
+          .map((f, i) => {
+            const labels = ['LinkedIn','Email 1','Email 2','Phone','Text'];
+            const done = !!lead[f];
+            return `<div class="pipeline-dot${done ? ' done' : ''}" title="${labels[i]}${done ? ': ' + formatDate(lead[f]) : ': Not sent'}"></div>`;
+          }).join('');
+
         return `<tr class="lead-row${isPanelSelected}${checkedClass}" data-id="${escHtml(lead.id)}" onclick="openPanel('${escHtml(lead.id)}')">
           <td class="check-col" onclick="event.stopPropagation()">
             <input type="checkbox" class="row-check" data-id="${escHtml(lead.id)}" ${isChecked ? 'checked' : ''} onclick="toggleRow('${escHtml(lead.id)}', this)" />
@@ -1437,6 +1509,7 @@
           <td class="email-cell">${lead.email ? escHtml(lead.email) : '—'}</td>
           <td>${appliedBadge}</td>
           <td>${lead.cohort ? escHtml(lead.cohort) : '—'}</td>
+          <td><div class="pipeline-dots">${pipelineDots}</div></td>
           <td>${assignedBadge}</td>
         </tr>`;
       });
@@ -1592,20 +1665,26 @@
         staffOpts += `<option value="${escHtml(s.id)}" ${s.id === currentAssigned ? 'selected' : ''}>${escHtml(s.name)}</option>`;
       });
 
-      const outreachItems = [
-        { type: 'LinkedIn', field: 'li_date', date: lead.li_date },
-        { type: 'Email 1', field: 'email1_date', date: lead.email1_date },
-        { type: 'Email 2', field: 'email2_date', date: lead.email2_date },
-        { type: 'Phone', field: 'phone_date', date: lead.phone_date },
-        { type: 'Text', field: 'text_date', date: lead.text_date }
+      const outreachSteps = [
+        { label: 'LinkedIn outreach',  field: 'li_date',     date: lead.li_date },
+        { label: 'Email 1 sent',       field: 'email1_date', date: lead.email1_date },
+        { label: 'Email 2 sent',       field: 'email2_date', date: lead.email2_date },
+        { label: 'Phone call made',    field: 'phone_date',  date: lead.phone_date },
+        { label: 'Text message sent',  field: 'text_date',   date: lead.text_date }
       ];
 
-      const outreachHtml = outreachItems.map(item => `
-        <div class="outreach-item">
-          <div class="outreach-type">${item.type}</div>
-          <div class="outreach-date ${item.date ? '' : 'none'}">${item.date ? formatDate(item.date) : 'Not sent'}</div>
-        </div>
-      `).join('');
+      const outreachHtml = outreachSteps.map(step => {
+        const done = !!step.date;
+        const dateStr = done ? formatDate(step.date) : '';
+        return `
+          <div class="pipeline-step${done ? ' done' : ''}" id="step-wrap-${step.field}" onclick="toggleOutreachStep('${escHtml(lead.id)}', '${step.field}', this)">
+            <input type="checkbox" ${done ? 'checked' : ''} />
+            <div class="pipeline-step-info">
+              <div class="pipeline-step-label">${step.label}</div>
+              ${done ? `<div class="pipeline-step-date">${escHtml(dateStr)}</div>` : '<div class="pipeline-step-date">Not done yet — click to mark complete</div>'}
+            </div>
+          </div>`;
+      }).join('');
 
       const linkedInHtml = lead.linkedin
         ? `<span class="detail-value"><a href="${escHtml(lead.linkedin)}" target="_blank" rel="noopener">View Profile ↗</a></span>`
@@ -1693,8 +1772,8 @@
         </div>
 
         <div class="panel-section">
-          <div class="panel-section-title">Outreach Tracking</div>
-          <div class="outreach-grid">
+          <div class="panel-section-title">Outreach Pipeline</div>
+          <div class="pipeline-steps">
             ${outreachHtml}
           </div>
         </div>
@@ -1771,6 +1850,56 @@
       } finally {
         btn.textContent = 'Save Assignment';
         btn.disabled = false;
+      }
+    }
+
+    /* ===================== PIPELINE STEPS ===================== */
+    async function toggleOutreachStep(leadId, field, stepEl) {
+      const checkbox = stepEl.querySelector('input[type="checkbox"]');
+      const isDone = checkbox.checked;
+      const newValue = isDone ? null : new Date().toISOString().slice(0, 10); // toggle
+
+      stepEl.classList.add('saving');
+
+      try {
+        const res = await fetch(SUPABASE_URL + '/rest/v1/leads?id=eq.' + encodeURIComponent(leadId), {
+          method: 'PATCH',
+          headers: { ...apiHeaders(), 'Prefer': 'return=minimal' },
+          body: JSON.stringify({ [field]: newValue })
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.message || res.statusText);
+        }
+
+        // Update local state
+        const lead = state.leads.find(l => l.id === leadId);
+        if (lead) lead[field] = newValue;
+        if (state.selectedLead && state.selectedLead.id === leadId) state.selectedLead[field] = newValue;
+
+        // Update UI
+        checkbox.checked = !isDone;
+        const infoEl = stepEl.querySelector('.pipeline-step-date');
+        if (!isDone) {
+          stepEl.classList.add('done');
+          stepEl.querySelector('.pipeline-step-label').style.fontWeight = '600';
+          if (infoEl) infoEl.textContent = formatDate(newValue);
+        } else {
+          stepEl.classList.remove('done');
+          stepEl.querySelector('.pipeline-step-label').style.fontWeight = '';
+          if (infoEl) infoEl.textContent = 'Not done yet — click to mark complete';
+        }
+
+        // Refresh the row pipeline dots in the table
+        renderTable();
+
+        showToast((!isDone ? 'Marked complete' : 'Step cleared') + '!', 'success');
+
+      } catch(e) {
+        showToast('Failed to save: ' + e.message, 'error');
+      } finally {
+        stepEl.classList.remove('saving');
       }
     }
 
