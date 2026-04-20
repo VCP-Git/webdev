@@ -1316,7 +1316,7 @@
     function populateStaffDropdowns() {
       const filterSel = document.getElementById('filter-staff');
       const currentVal = filterSel.value;
-      filterSel.innerHTML = '<option value="">All Specialists</option>';
+      filterSel.innerHTML = '<option value="">All Specialists</option><option value="__unassigned__">Unassigned</option>';
       state.staff.forEach(s => {
         const opt = document.createElement('option');
         opt.value = s.id;
@@ -1376,7 +1376,8 @@
       if (state.filterStatus) parts.push('status=eq.' + encodeURIComponent(state.filterStatus));
       if (state.filterAffiliation) parts.push('military_affiliation=eq.' + encodeURIComponent(state.filterAffiliation));
       if (state.filterCohort) parts.push('cohort=eq.' + encodeURIComponent(state.filterCohort));
-      if (state.filterStaff) parts.push('assigned_to=eq.' + encodeURIComponent(state.filterStaff));
+      if (state.filterStaff === '__unassigned__') parts.push('assigned_to=is.null');
+      else if (state.filterStaff) parts.push('assigned_to=eq.' + encodeURIComponent(state.filterStaff));
 
       return parts.join('&');
     }
