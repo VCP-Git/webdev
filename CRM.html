@@ -736,6 +736,59 @@
 
     .pipeline-step.saving { opacity: 0.55; pointer-events: none; }
 
+    .pipeline-step-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .step-clear-btn {
+      background: none;
+      border: none;
+      color: var(--text-light);
+      font-size: 14px;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+      line-height: 1;
+      flex-shrink: 0;
+      transition: color 0.15s, background 0.15s;
+    }
+    .step-clear-btn:hover { color: var(--danger); background: #fee2e2; }
+
+    .step-date-picker {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #d1fae5;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    .pipeline-step:not(.done) .step-date-picker {
+      border-top-color: var(--border);
+    }
+
+    .step-date-input {
+      flex: 1;
+      min-width: 140px;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      color: var(--text);
+      background: #fff;
+    }
+    .step-date-input:focus {
+      outline: none;
+      border-color: var(--navy-light);
+      box-shadow: 0 0 0 3px rgba(52,57,99,0.08);
+    }
+
     .assign-section {
       background: #f8f9fb;
       border-radius: var(--radius);
@@ -1676,12 +1729,18 @@
       const outreachHtml = outreachSteps.map(step => {
         const done = !!step.date;
         const dateStr = done ? formatDate(step.date) : '';
+        const clearBtn = done
+          ? `<button class="step-clear-btn" title="Clear" onclick="event.stopPropagation(); clearOutreachStep('${escHtml(lead.id)}', '${step.field}', this.closest('.pipeline-step'))">✕</button>`
+          : '';
         return `
-          <div class="pipeline-step${done ? ' done' : ''}" id="step-wrap-${step.field}" onclick="toggleOutreachStep('${escHtml(lead.id)}', '${step.field}', this)">
-            <input type="checkbox" ${done ? 'checked' : ''} />
-            <div class="pipeline-step-info">
-              <div class="pipeline-step-label">${step.label}</div>
-              ${done ? `<div class="pipeline-step-date">${escHtml(dateStr)}</div>` : '<div class="pipeline-step-date">Not done yet — click to mark complete</div>'}
+          <div class="pipeline-step${done ? ' done' : ''}" onclick="showStepDatePicker('${escHtml(lead.id)}', '${step.field}', this)">
+            <div class="pipeline-step-main">
+              <input type="checkbox" ${done ? 'checked' : ''} />
+              <div class="pipeline-step-info">
+                <div class="pipeline-step-label">${step.label}</div>
+                <div class="pipeline-step-date">${done ? escHtml(dateStr) : 'Click to log date'}</div>
+              </div>
+              ${clearBtn}
             </div>
           </div>`;
       }).join('');
@@ -1854,10 +1913,28 @@
     }
 
     /* ===================== PIPELINE STEPS ===================== */
-    async function toggleOutreachStep(leadId, field, stepEl) {
-      const checkbox = stepEl.querySelector('input[type="checkbox"]');
-      const isDone = checkbox.checked;
-      const newValue = isDone ? null : new Date().toISOString().slice(0, 10); // toggle
+    function showStepDatePicker(leadId, field, stepEl) {
+      // If picker already open, close it
+      const existing = stepEl.querySelector('.step-date-picker');
+      if (existing) { existing.remove(); return; }
+
+      const today = new Date().toISOString().slice(0, 10);
+      const currentDate = state.selectedLead?.[field] || today;
+
+      const picker = document.createElement('div');
+      picker.className = 'step-date-picker';
+      picker.innerHTML = `
+        <input type="date" class="step-date-input" value="${escHtml(currentDate)}" max="${today}" />
+        <button class="btn btn-primary btn-sm" onclick="saveOutreachStep('${escHtml(leadId)}', '${escHtml(field)}', this.closest('.pipeline-step'), this.parentElement.querySelector('.step-date-input').value)">Save</button>
+        <button class="btn btn-outline btn-sm" onclick="this.closest('.step-date-picker').remove()">Cancel</button>
+      `;
+      picker.addEventListener('click', e => e.stopPropagation());
+      stepEl.appendChild(picker);
+      picker.querySelector('.step-date-input').focus();
+    }
+
+    async function saveOutreachStep(leadId, field, stepEl, dateValue) {
+      if (!dateValue) { showToast('Please select a date.', 'error'); return; }
 
       stepEl.classList.add('saving');
 
@@ -1865,7 +1942,7 @@
         const res = await fetch(SUPABASE_URL + '/rest/v1/leads?id=eq.' + encodeURIComponent(leadId), {
           method: 'PATCH',
           headers: { ...apiHeaders(), 'Prefer': 'return=minimal' },
-          body: JSON.stringify({ [field]: newValue })
+          body: JSON.stringify({ [field]: dateValue })
         });
 
         if (!res.ok) {
@@ -1875,29 +1952,70 @@
 
         // Update local state
         const lead = state.leads.find(l => l.id === leadId);
-        if (lead) lead[field] = newValue;
-        if (state.selectedLead && state.selectedLead.id === leadId) state.selectedLead[field] = newValue;
+        if (lead) lead[field] = dateValue;
+        if (state.selectedLead && state.selectedLead.id === leadId) state.selectedLead[field] = dateValue;
 
-        // Update UI
-        checkbox.checked = !isDone;
-        const infoEl = stepEl.querySelector('.pipeline-step-date');
-        if (!isDone) {
-          stepEl.classList.add('done');
-          stepEl.querySelector('.pipeline-step-label').style.fontWeight = '600';
-          if (infoEl) infoEl.textContent = formatDate(newValue);
-        } else {
-          stepEl.classList.remove('done');
-          stepEl.querySelector('.pipeline-step-label').style.fontWeight = '';
-          if (infoEl) infoEl.textContent = 'Not done yet — click to mark complete';
+        // Update step UI
+        stepEl.classList.add('done');
+        stepEl.querySelector('input[type="checkbox"]').checked = true;
+        const dateEl = stepEl.querySelector('.pipeline-step-date');
+        if (dateEl) dateEl.textContent = formatDate(dateValue);
+        // Add clear button if not present
+        if (!stepEl.querySelector('.step-clear-btn')) {
+          const main = stepEl.querySelector('.pipeline-step-main');
+          const clearBtn = document.createElement('button');
+          clearBtn.className = 'step-clear-btn';
+          clearBtn.title = 'Clear';
+          clearBtn.textContent = '✕';
+          clearBtn.onclick = (e) => {
+            e.stopPropagation();
+            clearOutreachStep(leadId, field, stepEl);
+          };
+          main.appendChild(clearBtn);
         }
+        stepEl.querySelector('.step-date-picker')?.remove();
 
-        // Refresh the row pipeline dots in the table
         renderTable();
-
-        showToast((!isDone ? 'Marked complete' : 'Step cleared') + '!', 'success');
+        showToast('Saved!', 'success');
 
       } catch(e) {
         showToast('Failed to save: ' + e.message, 'error');
+      } finally {
+        stepEl.classList.remove('saving');
+      }
+    }
+
+    async function clearOutreachStep(leadId, field, stepEl) {
+      stepEl.classList.add('saving');
+
+      try {
+        const res = await fetch(SUPABASE_URL + '/rest/v1/leads?id=eq.' + encodeURIComponent(leadId), {
+          method: 'PATCH',
+          headers: { ...apiHeaders(), 'Prefer': 'return=minimal' },
+          body: JSON.stringify({ [field]: null })
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.message || res.statusText);
+        }
+
+        const lead = state.leads.find(l => l.id === leadId);
+        if (lead) lead[field] = null;
+        if (state.selectedLead && state.selectedLead.id === leadId) state.selectedLead[field] = null;
+
+        stepEl.classList.remove('done');
+        stepEl.querySelector('input[type="checkbox"]').checked = false;
+        const dateEl = stepEl.querySelector('.pipeline-step-date');
+        if (dateEl) dateEl.textContent = 'Click to log date';
+        stepEl.querySelector('.step-clear-btn')?.remove();
+        stepEl.querySelector('.step-date-picker')?.remove();
+
+        renderTable();
+        showToast('Step cleared.', 'default');
+
+      } catch(e) {
+        showToast('Failed to clear: ' + e.message, 'error');
       } finally {
         stepEl.classList.remove('saving');
       }
