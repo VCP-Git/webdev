@@ -4,7 +4,7 @@
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"],
       "env": {
-        "GITHUB_TOKEN": "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"
+        "GITHUB_TOKEN": "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"
       }
     },
     "supabase": {
