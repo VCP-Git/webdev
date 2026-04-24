@@ -7,16 +7,22 @@ contact info, categories, match status, etc.). Does NOT wipe the database.
 Usage:
   python vcp_resync.py "VCP Operations (DATA) (12).xlsx" > resync.sql
 
-Split the output into 4 parts for Supabase SQL Editor (~100KB limit per paste):
+Split the output into 5 parts for Supabase SQL Editor (~100KB limit per paste):
   Part 1: Helper table + People upserts
   Part 2: Client application upserts
   Part 3: Coach application upserts
   Part 4: Match upserts + priority recalc + verification
+  Part 5: Coach profile enrichment (bio, hobbies, LinkedIn, headshot, etc.)
+          from the "ALL FIELDS COACHES NEW" form submission tab
 """
 
 import openpyxl
 import re
 import sys
+import io
+
+# Force UTF-8 output on Windows
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 
 
 def esc(val):
@@ -318,6 +324,153 @@ SELECT c.cohort_name,
   (SELECT COUNT(*) FROM new_matches x WHERE x.cohort_id=c.id) AS matches
 FROM cohorts c ORDER BY c.year, c.season;
 """)
+
+    # ── PART 5: COACH PROFILE ENRICHMENT from ALL FIELDS COACHES NEW ──
+    print('-- ============================================================')
+    print('-- PART 5: Coach profile enrichment (bio, LinkedIn, headshot, etc.)')
+    print('-- Source: "ALL FIELDS COACHES NEW" tab (full form submissions)')
+    print('-- Strategy: COALESCE — only fills NULLs, never overwrites existing data')
+    print('--   Exception: bio/hobbies are always updated (form is authoritative)')
+    print('-- ============================================================')
+    print()
+
+    ws_rich = wb['ALL FIELDS COACHES NEW']
+    rich_rows = list(ws_rich.iter_rows(min_row=2, values_only=True))
+    print(f'-- Parsed {len(rich_rows)} rows from ALL FIELDS COACHES NEW')
+    print()
+
+    def s(vals, idx):
+        """Return stripped string or None."""
+        if idx >= len(vals): return None
+        v = vals[idx]
+        if v is None: return None
+        sv = str(v).strip()
+        return None if sv.lower() in ('', 'none', 'n/a', 'na', '#name?', '#ref!') else sv
+
+    # Deduplicate by email (keep latest timestamp per email)
+    rich_by_email = {}
+    rich_by_phone = {}
+    for row in rich_rows:
+        vals = list(row)
+        ts  = vals[0] if vals else None   # timestamp
+        email = s(vals, 7)
+        if email: email = email.lower()
+        phone = digits10(s(vals, 6))
+
+        rec = {
+            'ts':        ts,
+            'email':     email,
+            'phone':     phone,
+            'preferred': s(vals, 3),
+            'state':     s(vals, 10),
+            'zip':       s(vals, 12),
+            'creds':     s(vals, 14),
+            'creds_loc': s(vals, 15),
+            'education': s(vals, 17),
+            'employment':s(vals, 18),
+            'prof_bg':   s(vals, 19),
+            'affiliation':s(vals, 20),
+            'linkedin':  s(vals, 21),
+            'hobbies':   s(vals, 22),
+            'areas':     s(vals, 24),
+            'bio':       s(vals, 32),
+            'headshot':  s(vals, 33),
+            'mil_conn':  s(vals, 34),
+            'is_vet':    s(vals, 35),
+            'branch':    s(vals, 36),
+        }
+
+        # Combine credentials + where obtained
+        creds_parts = [p for p in [rec['creds'], rec['creds_loc']] if p]
+        rec['certifications'] = '; '.join(creds_parts) if creds_parts else None
+
+        if email:
+            existing = rich_by_email.get(email)
+            if not existing or (ts and existing['ts'] and ts > existing['ts']):
+                rich_by_email[email] = rec
+        if phone:
+            existing = rich_by_phone.get(phone)
+            if not existing or (ts and existing['ts'] and ts > existing['ts']):
+                rich_by_phone[phone] = rec
+
+    # Merge: email-keyed is primary, phone-keyed fills gaps for those without email
+    seen_phones = set(r['phone'] for r in rich_by_email.values() if r['phone'])
+    all_rich = list(rich_by_email.values())
+    for phone, rec in rich_by_phone.items():
+        if phone not in seen_phones:
+            all_rich.append(rec)
+
+    print(f'-- {len(all_rich)} unique coaches after dedup')
+    print()
+
+    for rec in all_rich:
+        email = rec['email']
+        phone = rec['phone']
+        if not email and not phone:
+            continue
+
+        # Build WHERE clause
+        if email and phone:
+            where_people = f"(LOWER(email)={esc(email)} OR phone={esc(phone)})"
+        elif email:
+            where_people = f"LOWER(email)={esc(email)}"
+        else:
+            where_people = f"phone={esc(phone)}"
+
+        # People table: only fill NULLs (COALESCE pattern)
+        people_sets = []
+        if rec['preferred']:
+            people_sets.append(f"preferred_name = COALESCE(preferred_name, {esc(rec['preferred'])})")
+        if rec['state']:
+            people_sets.append(f"state = COALESCE(state, {esc(rec['state'])})")
+        if rec['zip']:
+            people_sets.append(f"zip = COALESCE(zip, {esc(rec['zip'])})")
+        if rec['linkedin']:
+            people_sets.append(f"linkedin_url = COALESCE(linkedin_url, {esc(rec['linkedin'])})")
+        if rec['headshot']:
+            people_sets.append(f"headshot_url = COALESCE(headshot_url, {esc(rec['headshot'])})")
+        if rec['education']:
+            people_sets.append(f"education_level = COALESCE(education_level, {esc(rec['education'])})")
+        if rec['prof_bg']:
+            people_sets.append(f"professional_background = COALESCE(professional_background, {esc(rec['prof_bg'])})")
+        if rec['certifications']:
+            people_sets.append(f"coaching_credentials = COALESCE(coaching_credentials, {esc(rec['certifications'])})")
+        if rec['mil_conn']:
+            people_sets.append(f"military_connection = COALESCE(military_connection, {esc(rec['mil_conn'])})")
+        if rec['branch']:
+            people_sets.append(f"branch_of_service = COALESCE(branch_of_service, {esc(rec['branch'])})")
+
+        if people_sets:
+            print(f"UPDATE people SET")
+            print(f"  " + ",\n  ".join(people_sets) + ",")
+            print(f"  updated_at = now()")
+            print(f"WHERE {where_people};")
+            print()
+
+        # Coach applications: bio/hobbies always update (form is authoritative);
+        # other fields fill NULLs only
+        app_sets = []
+        if rec['bio']:
+            # Always overwrite bio — form submission is the ground truth
+            app_sets.append(f"bio = {esc(rec['bio'])}")
+        if rec['hobbies']:
+            app_sets.append(f"hobbies_interests = {esc(rec['hobbies'])}")
+        if rec['certifications']:
+            app_sets.append(f"certifications = COALESCE(certifications, {esc(rec['certifications'])})")
+        if rec['areas']:
+            app_sets.append(f"coaching_areas_text = COALESCE(coaching_areas_text, {esc(rec['areas'])})")
+        if rec['affiliation']:
+            app_sets.append(f"affiliation = COALESCE(affiliation, {esc(rec['affiliation'])})")
+
+        if app_sets:
+            print(f"UPDATE coach_applications SET")
+            print(f"  " + ",\n  ".join(app_sets) + ",")
+            print(f"  updated_at = now()")
+            print(f"WHERE person_id IN (SELECT id FROM people WHERE {where_people});")
+            print()
+
+    print('-- Part 5 complete')
+    print()
 
     wb.close()
 
