@@ -1747,15 +1747,43 @@
   window.vdDoMatch=async function(coachAppId,coachName){
     var c=allC.find(function(x){return x.application_id===selId;});
     if(!c) return;
-    if(!confirm('Match '+c.first_name+' '+c.last_name+' with '+coachName+'?\n\nEmails will be sent to both the client and coach after matching.')) return;
+    var sendEmail=confirm('Match '+c.first_name+' '+c.last_name+' with '+coachName+'?\n\nClick OK to create the match AND send notification emails to both parties.\nClick Cancel to abort.');
+    if(!sendEmail) return;
     try{
-      await api('new_matches','POST',{cohort_id:curCoh,coach_application_id:coachAppId,client_application_id:selId,status:'Active',match_date:new Date().toISOString().split('T')[0]});
+      var matchRows=await api('new_matches','POST',{cohort_id:curCoh,coach_application_id:coachAppId,client_application_id:selId,status:'Active',match_date:new Date().toISOString().split('T')[0]});
       await api('client_applications?id=eq.'+selId,'PATCH',{status:'Active',status_date:new Date().toISOString().split('T')[0]});
       await api('coach_applications?id=eq.'+coachAppId,'PATCH',{status:'Active',status_date:new Date().toISOString().split('T')[0]});
+      // Send emails manually — never fires automatically
+      try{
+        var matchId=Array.isArray(matchRows)&&matchRows[0]?matchRows[0].id:null;
+        if(matchId){
+          var emailResult=await api('rpc/send_match_email','POST',{p_match_id:matchId});
+          if(emailResult&&emailResult.ok===false){
+            toast('Match created, but email blocked: '+emailResult.error,'err');
+          } else {
+            toast('Matched with '+coachName+' — emails sent!','ok');
+          }
+        } else {
+          toast('Matched with '+coachName+' (email not sent — match ID missing)','ok');
+        }
+      }catch(emailErr){
+        toast('Match created, but email error: '+emailErr.message,'err');
+      }
       await vdLoad();
       vdSel(selId);
-      toast('Matched with '+coachName+'!','ok');
     }catch(e){toast('Error: '+e.message,'err');}
+  };
+
+  window.vdSendMatchEmail=async function(matchId, clientName, coachName){
+    if(!confirm('Send match notification emails to:\n  Client: '+clientName+'\n  Coach: '+coachName+'\n\nThis will email both parties. Continue?')) return;
+    try{
+      var result=await api('rpc/send_match_email','POST',{p_match_id:matchId});
+      if(result&&result.ok===false){
+        toast('Email blocked: '+result.error,'err');
+      } else {
+        toast('Emails sent to '+clientName+' and '+coachName+'!','ok');
+      }
+    }catch(e){toast('Email error: '+e.message,'err');}
   };
 
   // Inject coach section HTML after client detail renders
@@ -2136,7 +2164,11 @@
               h+='<div class="vd-bio" style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">'
                 +'<div><strong>'+cp[0].first_name+' '+cp[0].last_name+'</strong>'
                 +'<div style="font-size:14px;color:#646C91;">'+( cp[0].email||'—')+' · '+(clientApp.assigned_category||'No category')+' · Match: '+m.status+'</div></div>'
+                +'<div style="display:flex;gap:8px;align-items:center;">'
                 +'<span class="vd-badge '+(m.status||'active').toLowerCase().replace(/ /g,'-')+'">'+m.status+'</span>'
+                +(m.emails_sent?'<span style="font-size:12px;color:#16a34a;font-weight:600;">✓ Emailed</span>'
+                  :'<button class="vd-action-btn" style="font-size:12px;padding:5px 10px;" onclick="vdSendMatchEmail(\''+m.id+'\',\''+esc(cp[0].first_name+' '+cp[0].last_name)+'\',\''+esc(k.first_name+' '+k.last_name)+'\')">📧 Send Email</button>')
+                +'</div>'
                 +'</div>';
             }
           }
