@@ -1013,13 +1013,26 @@
   }
 
   // Fetch rich coach data from old coaches table
-  async function getCoachRich(email){
-    if(!email) return null;
-    if(coachRichCache[email]) return coachRichCache[email];
-    try {
-      var rows = await api('coaches?email=eq.'+encodeURIComponent(email)+'&limit=1');
-      if(rows.length){coachRichCache[email]=rows[0]; return rows[0];}
-    } catch(e){}
+  // Tries case-insensitive email first, then phone digits as fallback
+  async function getCoachRich(email, phone){
+    var cacheKey=email||phone;
+    if(!cacheKey) return null;
+    if(coachRichCache[cacheKey]) return coachRichCache[cacheKey];
+    try{
+      // 1. Case-insensitive email match
+      if(email){
+        var rows=await api('coaches?email=ilike.'+encodeURIComponent(email)+'&limit=1');
+        if(rows.length){ coachRichCache[cacheKey]=rows[0]; return rows[0]; }
+      }
+      // 2. Phone number fallback — strip to digits, try phone and mobile_phone fields
+      if(phone){
+        var digits=String(phone).replace(/\D/g,'');
+        var r1=await api('coaches?phone=eq.'+encodeURIComponent(digits)+'&limit=1');
+        if(r1.length){ coachRichCache[cacheKey]=r1[0]; return r1[0]; }
+        var r2=await api('coaches?mobile_phone=eq.'+encodeURIComponent(digits)+'&limit=1');
+        if(r2.length){ coachRichCache[cacheKey]=r2[0]; return r2[0]; }
+      }
+    }catch(e){}
     return null;
   }
 
@@ -1558,7 +1571,7 @@
     panel.innerHTML='<div class="vd-load"><div class="vd-spin"></div>Loading details...</div>';
 
     var clientRich=await getClientRich(c.email);
-    var coachRich=await getCoachRich(co.email);
+    var coachRich=await getCoachRich(co.email, co.legacy_id);
 
     var h='<button class="vd-match-top-btn" onclick="vdDoMatch(\''+coachAppId+'\',\''+esc(co.first_name+' '+co.last_name)+'\')">✓ Match '+c.first_name+' with '+co.first_name+'</button>';
 
@@ -2032,8 +2045,8 @@
     var panel=document.getElementById('vdDet');
     panel.innerHTML='<div class="vd-load"><div class="vd-spin"></div>Loading...</div>';
 
-    // Fetch rich data (old coaches intake form table)
-    var rich=await getCoachRich(k.email);
+    // Fetch rich data (old coaches intake form table) — try email first, phone as fallback
+    var rich=await getCoachRich(k.email, k.legacy_id);
 
     // Supplement with new schema data — fills gaps when coach isn't in the old form table
     var _coachPersonId=null;
