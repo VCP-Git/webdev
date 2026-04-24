@@ -156,6 +156,10 @@
     cursor:pointer;
   }
   .vd-fclear:hover { background:#fee2e2; color:#991b1b; border-color:#fca5a5; }
+  #rolloverBanner { display:none; background:#fffbeb; border-bottom:1px solid #fcd34d; padding:10px 28px; align-items:center; gap:12px; }
+  #rolloverBanner.show { display:flex; }
+  .vd-rollover-btn { padding:6px 16px; border-radius:6px; border:none; background:#d97706; color:#fff; font-family:inherit; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; }
+  .vd-rollover-btn:hover { background:#b45309; }
 
   /* MAIN */
   .vd-main {
@@ -916,6 +920,12 @@
     <button class="vd-fclear" onclick="vdClearFilters()">Clear All</button>
   </div>
 
+  <div id="rolloverBanner">
+    <span style="font-size:18px;">⚡</span>
+    <div style="flex:1;font-size:13px;font-weight:600;color:#92400e;" id="rolloverMsg"></div>
+    <button class="vd-rollover-btn" onclick="vdExecuteRollover()">Execute Rollover</button>
+  </div>
+
   <div class="vd-main">
     <div class="vd-list" id="vdList"><div class="vd-load"><div class="vd-spin"></div>Loading...</div></div>
     <div class="vd-det" id="vdDet">
@@ -1060,6 +1070,7 @@
     document.getElementById('s1Label').textContent='P1';
     document.getElementById('s2Label').textContent='P2';
     document.getElementById('s3Label').textContent='P3';
+    vdUpdateRolloverBanner();
   }
 
   window.vdTab=function(t,btn){
@@ -1149,7 +1160,41 @@
     document.getElementById('s1Label').textContent='P1';
     document.getElementById('s2Label').textContent='P2';
     document.getElementById('s3Label').textContent='P3';
+    vdUpdateRolloverBanner();
   }
+
+  function vdUpdateRolloverBanner(){
+    var banner=document.getElementById('rolloverBanner');
+    if(curView!=='coaches'){ banner.classList.remove('show'); return; }
+    var cur=cohorts.find(function(c){ return c.id===curCoh; });
+    if(!cur){ banner.classList.remove('show'); return; }
+    var prev=null;
+    cohorts.forEach(function(c){
+      if(c.cohort_numeric<cur.cohort_numeric){
+        if(!prev||c.cohort_numeric>prev.cohort_numeric) prev=c;
+      }
+    });
+    if(!prev){ banner.classList.remove('show'); return; }
+    document.getElementById('rolloverMsg').textContent=
+      'Roll over waitlisted coaches from '+prev.cohort_name+' → '+cur.cohort_name;
+    banner.dataset.from=prev.cohort_name;
+    banner.dataset.to=cur.cohort_name;
+    banner.classList.add('show');
+  }
+
+  window.vdExecuteRollover=async function(){
+    var banner=document.getElementById('rolloverBanner');
+    var fromCohort=banner.dataset.from;
+    var toCohort=banner.dataset.to;
+    if(!fromCohort||!toCohort) return;
+    if(!confirm('Execute rollover?\n\nThis will carry over all Waitlisted coaches from '+fromCohort+' to '+toCohort+'.\n\nCoaches already in '+toCohort+' will not be duplicated.\nPriorities will be recalculated automatically.')) return;
+    try{
+      toast('Rolling over coaches...','ok');
+      var result=await api('rpc/rollover_coaches','POST',{p_from:fromCohort,p_to:toCohort});
+      await vdLoad();
+      toast('Rolled over '+(result.length)+' coaches from '+fromCohort,'ok');
+    }catch(e){ toast('Rollover error: '+e.message,'err'); }
+  };
 
   window.vdApplyFilters=function(){
     filters.status=document.getElementById('fStatus').value;
@@ -1987,8 +2032,43 @@
     var panel=document.getElementById('vdDet');
     panel.innerHTML='<div class="vd-load"><div class="vd-spin"></div>Loading...</div>';
 
-    // Fetch rich data
+    // Fetch rich data (old coaches intake form table)
     var rich=await getCoachRich(k.email);
+
+    // Supplement with new schema data — fills gaps when coach isn't in the old form table
+    var _coachPersonId=null;
+    try{
+      var _sr=null;
+      if(k.legacy_id){
+        var _sp=await api('people?legacy_id=eq.'+encodeURIComponent(k.legacy_id)+'&select=*&limit=1');
+        if(_sp.length){ _sr=_sp[0]; _coachPersonId=_sr.id; }
+      }
+      if(!_sr&&k.coach_id){
+        var _sp2=await api('people?vcp_id=eq.'+encodeURIComponent(k.coach_id)+'&select=*&limit=1');
+        if(_sp2.length){ _sr=_sp2[0]; _coachPersonId=_sr.id; }
+      }
+      var _appData=await api('coach_applications?id=eq.'+appId+'&select=bio,hobbies_interests,coaching_areas_text,certifications,status_notes&limit=1');
+      var _ad=_appData.length?_appData[0]:{};
+      var sup=Object.assign({},rich||{});
+      if(!sup.bio&&_ad.bio) sup.bio=_ad.bio;
+      if(!sup.hobbies_interests&&_ad.hobbies_interests) sup.hobbies_interests=_ad.hobbies_interests;
+      if(_ad.coaching_areas_text) sup.coaching_areas=_ad.coaching_areas_text;
+      if(!sup.coaching_credentials&&_ad.certifications) sup.coaching_credentials=_ad.certifications;
+      if(!sup.matching_notes&&_ad.status_notes) sup.matching_notes=_ad.status_notes;
+      if(_sr){
+        if(!sup.phone&&_sr.phone) sup.phone=_sr.phone;
+        if(!sup.city&&_sr.city) sup.city=_sr.city;
+        if(!sup.state&&_sr.state) sup.state=_sr.state;
+        if(!sup.education_level&&_sr.education_level) sup.education_level=_sr.education_level;
+        if(!sup.professional_background&&_sr.professional_background) sup.professional_background=_sr.professional_background;
+        if(!sup.linkedin_url&&_sr.linkedin_url) sup.linkedin_url=_sr.linkedin_url;
+        if(!sup.military_connection&&_sr.military_connection) sup.military_connection=_sr.military_connection;
+        if(!sup.branch&&_sr.branch_of_service) sup.branch=_sr.branch_of_service;
+        if(!sup.is_veteran) sup.is_veteran=_sr.is_veteran;
+        if(!sup.coaching_credentials&&_sr.coaching_credentials) sup.coaching_credentials=_sr.coaching_credentials;
+      }
+      rich=sup;
+    }catch(e){ console.error('Coach supplement error',e); }
 
     var h='';
 
@@ -2180,6 +2260,39 @@
       avail.forEach(function(a){ h+='<div style="font-size:13px;padding:4px 0;color:#455560;">'+a+'</div>'; });
       h+='</div></div>';
     }
+
+    // Coach cohort history
+    try{
+      var personId=_coachPersonId; // reuse from supplement fetch above
+      if(personId){
+        var coachApps=await api('coach_applications?person_id=eq.'+personId+'&select=id,status,priority,cohort_id&order=cohort_id.asc');
+        if(coachApps.length){
+          // Get any matches for this coach
+          var myMatchIds=coachApps.map(function(a){return a.id;});
+          var myMatches={};
+          try{
+            var mRows=await api('new_matches?coach_application_id=in.('+myMatchIds.join(',')+')'+'&select=coach_application_id,status');
+            mRows.forEach(function(m){ myMatches[m.coach_application_id]=m.status; });
+          }catch(e2){}
+
+          h+='<div class="vd-card"><div class="vd-ct">📅 Cohort History ('+coachApps.length+' cohort'+(coachApps.length!==1?'s':'')+')</div>';
+          // Sort newest first
+          coachApps.slice().reverse().forEach(function(app){
+            var coh=cohorts.find(function(c){ return c.id===app.cohort_id; });
+            var cohName=coh?coh.cohort_name:'Unknown cohort';
+            var matchSt=myMatches[app.id];
+            var d=matchSt==='Completed'?'g':app.status==='Dropped'||app.status==='Inactive'?'b':'w';
+            h+='<div class="vd-hi"><div class="vd-hd '+d+'"></div><div>'
+              +'<div class="vd-hc">'+cohName+'</div>'
+              +'<div class="vd-hdt">'+(app.status||'—')
+              +(matchSt?' · Match: '+matchSt:' · Not matched')
+              +(app.priority?' · '+app.priority:'')
+              +'</div></div></div>';
+          });
+          h+='</div>';
+        }
+      }
+    }catch(e){ console.error('History error',e); }
 
     panel.innerHTML=h;
     panel.scrollTop=0;
